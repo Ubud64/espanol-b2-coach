@@ -4,23 +4,35 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#fff8ef" />
-  <link rel="manifest" href="manifest.webmanifest" />
   <title>Español B2</title>
   <style>
-    :root{--bg:#fff8ef;--card:#ffffff;--text:#2a201b;--muted:#76665d;--accent:#d84c3d;--accent2:#f2b84b;--line:#eadfd5;--good:#3d8b68;--shadow:0 10px 30px rgba(65,40,25,.08)}
-    *{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#fff8ef,#fffdf9);color:var(--text)}
-    .app{max-width:720px;margin:0 auto;min-height:100vh;padding:calc(18px + env(safe-area-inset-top)) 16px calc(92px + env(safe-area-inset-bottom))}
-    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.brand h1{font-size:28px;margin:0}.brand p{margin:3px 0 0;color:var(--muted);font-size:14px}.badge{background:#fff1db;border:1px solid #f4d7a0;border-radius:999px;padding:8px 11px;font-weight:700;font-size:13px}
-    .card{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:22px;padding:18px;margin:14px 0}.card h2{font-size:18px;margin:0 0 12px}.label{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px}
-    .topics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.topic{border:1px solid var(--line);background:#fff;border-radius:16px;padding:12px;font-size:15px;text-align:left}.topic.active{border-color:var(--accent);background:#fff0ec;color:#8f2c22;font-weight:700}
-    .rangeRow{display:flex;align-items:center;gap:12px}.rangeRow input{width:100%}.value{min-width:78px;text-align:center;background:#fff3e7;border-radius:12px;padding:9px 10px;font-weight:800}
-    .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.seg button{border:1px solid var(--line);background:#fff;border-radius:13px;padding:10px;font-weight:700}.seg button.active{background:#fff0ec;border-color:var(--accent);color:#8f2c22}
-    .primary{width:100%;border:0;background:var(--accent);color:white;font-size:17px;font-weight:800;padding:15px 16px;border-radius:16px;box-shadow:0 8px 18px rgba(216,76,61,.2)}
-    .secondary{width:100%;border:1px solid var(--line);background:#fff;color:var(--text);font-size:15px;font-weight:700;padding:13px 14px;border-radius:15px}
-    .sessionBox{display:none}.sessionBox.show{display:block}.status{display:flex;gap:8px;flex-wrap:wrap}.pill{font-size:12px;background:#f7f2ee;border-radius:999px;padding:7px 9px;color:var(--muted);font-weight:700}.instruction{background:#fff8e8;border:1px solid #f1dfae;padding:12px;border-radius:14px;font-size:14px;line-height:1.45}.finBox{display:flex;gap:8px;margin-top:12px}.finBox input{flex:1;border:1px solid var(--line);border-radius:14px;padding:13px;font-size:16px}.finBox button{border:0;border-radius:14px;padding:0 15px;background:#2f2b28;color:white;font-weight:800}.result{margin-top:12px;padding:12px;background:#eff8f3;border:1px solid #cce6d7;border-radius:14px;color:#235d44;display:none}.result.show{display:block}
-    .list{display:grid;gap:10px}.item{border:1px solid var(--line);border-radius:15px;padding:12px}.item b{display:block;margin-bottom:4px}.muted{color:var(--muted);font-size:13px}.empty{text-align:center;color:var(--muted);padding:24px 8px}
-    nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(720px,100%);background:rgba(255,253,249,.94);backdrop-filter:blur(16px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);padding:8px 10px calc(8px + env(safe-area-inset-bottom));z-index:5}nav button{border:0;background:transparent;padding:7px 4px;color:var(--muted);font-weight:700}nav button.active{color:var(--accent)}nav span{display:block;font-size:20px;margin-bottom:2px}
-    section{display:none}section.active{display:block}.tiny{font-size:12px;color:var(--muted);margin-top:8px}
+    :root{
+      --bg:#fff8ef;--card:#fff;--text:#2a201b;--muted:#786a61;--accent:#d84c3d;--accent2:#f4b84a;
+      --line:#eadfd5;--red:#c94536;--orange:#d98a2b;--green:#388666;--blue:#2c75b9;--purple:#7a5caf;
+      --shadow:0 10px 30px rgba(65,40,25,.08)
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#fff8ef,#fffdf9);color:var(--text)}
+    .app{max-width:720px;margin:0 auto;min-height:100vh;padding:calc(18px + env(safe-area-inset-top)) 16px calc(98px + env(safe-area-inset-bottom))}
+    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.brand h1{font-size:28px;margin:0}.brand p{margin:3px 0 0;color:var(--muted);font-size:14px}.badge{background:#fff1db;border:1px solid #f4d7a0;border-radius:999px;padding:8px 11px;font-weight:800;font-size:13px}
+    .card{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:22px;padding:18px;margin:14px 0}.card h2{font-size:19px;margin:0 0 12px}.label{font-size:13px;font-weight:800;color:var(--muted);margin-bottom:8px}
+    .importHero{background:linear-gradient(135deg,#fff2e8,#fffaf1);border:1px solid #f1d5bf}.importHero p{margin:5px 0 13px;color:var(--muted);line-height:1.4}
+    .topics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.topic{border:1px solid var(--line);background:#fff;border-radius:16px;padding:12px;font-size:15px;text-align:left}.topic.active{border-color:var(--accent);background:#fff0ec;color:#8f2c22;font-weight:800}
+    .rangeRow{display:flex;align-items:center;gap:12px}.rangeRow input{width:100%}.value{min-width:78px;text-align:center;background:#fff3e7;border-radius:12px;padding:9px 10px;font-weight:900}
+    .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.seg button{border:1px solid var(--line);background:#fff;border-radius:13px;padding:10px;font-weight:800}.seg button.active{background:#fff0ec;border-color:var(--accent);color:#8f2c22}
+    .primary{width:100%;border:0;background:var(--accent);color:#fff;font-size:17px;font-weight:900;padding:15px 16px;border-radius:16px;box-shadow:0 8px 18px rgba(216,76,61,.2)}
+    .secondary{width:100%;border:1px solid var(--line);background:#fff;color:var(--text);font-size:15px;font-weight:800;padding:13px 14px;border-radius:15px}.ghost{background:#fff9f4}
+    .sessionBox{display:none}.sessionBox.show{display:block}.status{display:flex;gap:8px;flex-wrap:wrap}.pill{font-size:12px;background:#f7f2ee;border-radius:999px;padding:7px 9px;color:var(--muted);font-weight:800}.instruction{background:#fff8e8;border:1px solid #f1dfae;padding:12px;border-radius:14px;font-size:14px;line-height:1.45}.tiny{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.4}
+    .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{border:1px solid var(--line);border-radius:16px;padding:12px;background:#fff}.stat .n{font-size:24px;font-weight:900}.stat .t{font-size:12px;color:var(--muted);font-weight:700;margin-top:2px}
+    .list{display:grid;gap:10px}.item{border:1px solid var(--line);border-radius:15px;padding:12px;background:#fff}.item b{display:block;margin-bottom:4px}.muted{color:var(--muted);font-size:13px;line-height:1.35}.empty{text-align:center;color:var(--muted);padding:24px 8px;line-height:1.5}
+    .level{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 8px;font-size:11px;font-weight:900;margin-bottom:8px}.red{background:#fde8e5;color:#9d2c22}.orange{background:#fff0dc;color:#995b17}.green{background:#e7f5ee;color:#226348}.blue{background:#e8f2fb;color:#245f91}.purple{background:#f0eafb;color:#5e438e}
+    .gameType{font-size:11px;color:var(--blue);font-weight:900;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}.answer{display:none;margin-top:10px;padding:10px;border-radius:12px;background:#f5f2ef}.answer.show{display:block}.smallBtn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:8px 10px;font-weight:800;margin-top:9px}
+    .importResult{display:none;margin-top:12px;padding:12px;background:#eff8f3;border:1px solid #cce6d7;border-radius:14px;color:#235d44;line-height:1.45}.importResult.show{display:block}.error{background:#fff0ee!important;border-color:#f0c8c2!important;color:#8f2c22!important}
+    .fallback{display:none;margin-top:12px}.fallback.show{display:block}.fallback textarea{width:100%;min-height:160px;border:1px solid var(--line);border-radius:14px;padding:12px;font-size:14px;resize:vertical}
+    .twoBtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+    nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(720px,100%);background:rgba(255,253,249,.95);backdrop-filter:blur(16px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:5}nav button{border:0;background:transparent;padding:7px 2px;color:var(--muted);font-weight:800;font-size:11px}nav button.active{color:var(--accent)}nav span{display:block;font-size:20px;margin-bottom:2px}
+    section{display:none}section.active{display:block}
+    .sessionHistory{font-size:12px;color:var(--muted);margin-top:8px}
   </style>
 </head>
 <body>
@@ -28,6 +40,29 @@
   <header><div class="brand"><h1>Español B2 🇪🇸</h1><p>Lire • comprendre • parler • progresser</p></div><div class="badge">B2</div></header>
 
   <section id="session" class="active">
+    <div class="card importHero">
+      <h2>📥 Retour de séance</h2>
+      <p>Après avoir écrit <b>fin</b> dans ChatGPT, copie sa réponse puis reviens ici.</p>
+      <button class="primary" id="importBtn">Importer ma séance</button>
+      <div class="importResult" id="importResult"></div>
+      <div class="fallback" id="fallback">
+        <div class="label">Collage manuel si l’iPhone bloque l’accès au presse-papiers</div>
+        <textarea id="pasteArea" lang="es" spellcheck="true" placeholder="Colle ici la réponse complète de ChatGPT…"></textarea>
+        <button class="secondary" id="manualImportBtn">Importer ce contenu</button>
+      </div>
+    </div>
+
+    <div class="card" id="progressCard">
+      <h2>Progression</h2>
+      <div class="stats">
+        <div class="stat"><div class="n" id="sessionCount">0</div><div class="t">séances importées</div></div>
+        <div class="stat"><div class="n" id="gameCount">0</div><div class="t">jeux disponibles</div></div>
+        <div class="stat"><div class="n" id="grammarCount">0</div><div class="t">points de grammaire</div></div>
+        <div class="stat"><div class="n" id="vocabCount">0</div><div class="t">mots / expressions</div></div>
+      </div>
+      <div class="sessionHistory" id="lastSession">Aucune séance importée pour l’instant.</div>
+    </div>
+
     <div class="card">
       <h2>Quelle humeur aujourd’hui ?</h2>
       <div class="topics" id="topics"></div>
@@ -45,20 +80,23 @@
     <div class="card sessionBox" id="sessionBox">
       <h2>Séance prête 🎙️</h2>
       <div class="status"><div class="pill" id="topicPill"></div><div class="pill" id="timePill"></div><div class="pill" id="qPill"></div></div>
-      <p class="instruction" id="promptText"></p>
+      <p class="instruction">La consigne est prête. Copie-la dans ChatGPT puis fais toute la séance là-bas. Quand tu veux arrêter, écris uniquement <b>fin</b>.</p>
       <button class="secondary" id="copyBtn">Copier la consigne ChatGPT</button>
-      <p class="tiny">Version test : on valide d’abord l’ergonomie et la logique. L’intégration directe à ChatGPT viendra ensuite.</p>
-      <div class="finBox"><input id="finInput" placeholder='Écris seulement “fin” pour terminer'/><button id="finBtn">OK</button></div>
-      <div class="result" id="result">✅ Fin reconnue. Dans la version connectée, ChatGPT générera ici le bilan et alimentera automatiquement Jeux + Grammaire.</div>
+      <div class="twoBtns"><a href="https://chatgpt.com/" style="text-decoration:none"><button class="secondary ghost" style="height:100%">Ouvrir ChatGPT</button></a><button class="secondary ghost" id="hideSessionBtn">Masquer</button></div>
+      <p class="tiny">Le coach traite la séance comme de l’espagnol même si l’autocorrecteur du clavier introduit ponctuellement un mot d’une autre langue.</p>
     </div>
   </section>
 
   <section id="games">
-    <div class="card"><h2>🎮 Jeux</h2><div class="empty">Les jeux seront créés à partir des erreurs détectées pendant les séances.<br><br>Exemples : phrase à réparer, choix rapide, mot manquant, mini-dialogue.</div></div>
+    <div class="card"><h2>🎮 Jeux</h2><div id="gamesList" class="list"></div></div>
   </section>
 
   <section id="grammar">
-    <div class="card"><h2>📚 Grammaire</h2><div class="list"><div class="item"><b>À travailler</b><span class="muted">Les fiches apparaîtront automatiquement quand une difficulté revient.</span></div><div class="item"><b>Règle de fonctionnement</b><span class="muted">Courte explication + exemples + exercices issus de ses propres erreurs.</span></div></div></div>
+    <div class="card"><h2>📚 Grammaire</h2><div id="grammarList" class="list"></div></div>
+  </section>
+
+  <section id="vocab">
+    <div class="card"><h2>🗣️ Vocabulaire</h2><div id="vocabList" class="list"></div></div>
   </section>
 </div>
 
@@ -66,26 +104,92 @@
   <button data-tab="session" class="active"><span>🎙️</span>Séance</button>
   <button data-tab="games"><span>🎮</span>Jeux</button>
   <button data-tab="grammar"><span>📚</span>Grammaire</button>
+  <button data-tab="vocab"><span>🗣️</span>Vocab</button>
 </nav>
+
 <script>
 const topics=[['🌍','Voyage'],['📰','Actualité'],['🎭','Culture'],['🍽️','Gastronomie'],['🧠','Société'],['🎬','Cinéma'],['🌿','Nature'],['🎲','Surprise']];
-let state=JSON.parse(localStorage.getItem('esb2')||'{}');
-state.topic=state.topic||'Voyage'; state.duration=state.duration||5; state.questions=state.questions||3;
+const STORAGE='esb2-v2';
+let db=JSON.parse(localStorage.getItem(STORAGE)||'{}');
+db.settings=db.settings||{topic:'Voyage',duration:5,questions:3};
+db.sessions=db.sessions||[]; db.games=db.games||[]; db.grammar=db.grammar||[]; db.vocab=db.vocab||[];
+const state=db.settings;
+function save(){localStorage.setItem(STORAGE,JSON.stringify(db))}
+
 const topicsEl=document.getElementById('topics');
 function renderTopics(){topicsEl.innerHTML='';topics.forEach(([e,t])=>{const b=document.createElement('button');b.className='topic'+(state.topic===t?' active':'');b.textContent=e+' '+t;b.onclick=()=>{state.topic=t;save();renderTopics()};topicsEl.appendChild(b)})}
-const dur=document.getElementById('duration'); dur.value=state.duration; document.getElementById('durationValue').textContent=state.duration;
+const dur=document.getElementById('duration');dur.value=state.duration;document.getElementById('durationValue').textContent=state.duration;
 dur.oninput=()=>{state.duration=+dur.value;document.getElementById('durationValue').textContent=dur.value;save()};
 const qseg=document.getElementById('questionSeg');
 function renderQuestions(){qseg.innerHTML='';[3,4,5].forEach(n=>{const b=document.createElement('button');b.textContent=n;b.className=state.questions===n?'active':'';b.onclick=()=>{state.questions=n;save();renderQuestions()};qseg.appendChild(b)})}
-function save(){localStorage.setItem('esb2',JSON.stringify(state))}
-function buildPrompt(){return `Tu es mon coach d'espagnol niveau B2. Crée une séance sur le thème « ${state.topic} ». Commence par un texte en espagnol prévu pour environ ${state.duration} minutes de lecture à voix haute. Pendant ma lecture, ne m'interromps pas. À la fin, donne seulement les corrections de prononciation vraiment utiles. Pose ensuite ${state.questions} questions de compréhension, une par une, puis poursuis par une conversation naturelle avec des questions personnelles ou générales liées au même thème. Pendant toute la séance, mémorise discrètement mes erreurs de grammaire, vocabulaire et expression. Ne transforme pas chaque réponse en cours. Lorsque j'écris uniquement « fin » (quelle que soit la casse), termine immédiatement la séance, fais un bilan bref, puis transforme mes erreurs utiles en exercices pour l'onglet Jeux et en mini-fiches pour l'onglet Grammaire. Niveau général B2, espagnol naturel.`}
-document.getElementById('startBtn').onclick=()=>{document.getElementById('sessionBox').classList.add('show');document.getElementById('topicPill').textContent=state.topic;document.getElementById('timePill').textContent=state.duration+' min';document.getElementById('qPill').textContent=state.questions+' questions';document.getElementById('promptText').textContent='La consigne de séance est prête. Copie-la dans ChatGPT pour notre premier test réel.';document.getElementById('result').classList.remove('show')}
-document.getElementById('copyBtn').onclick=async()=>{const text=buildPrompt();try{await navigator.clipboard.writeText(text);document.getElementById('copyBtn').textContent='✅ Consigne copiée';setTimeout(()=>document.getElementById('copyBtn').textContent='Copier la consigne ChatGPT',1800)}catch(e){alert(text)}};
-function checkFin(){const v=document.getElementById('finInput').value.trim().toLowerCase();if(v==='fin'){document.getElementById('result').classList.add('show')}else{document.getElementById('result').classList.remove('show');alert('Pour terminer la séance, le mot « fin » doit être envoyé seul.')}}
-document.getElementById('finBtn').onclick=checkFin;document.getElementById('finInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkFin()});
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));document.getElementById(b.dataset.tab).classList.add('active');b.classList.add('active')});
-renderTopics();renderQuestions();save();
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+
+function buildPrompt(){return `Tu es mon coach d'espagnol niveau B2. Crée une séance sur le thème « ${state.topic} ». Commence par un texte en espagnol prévu pour environ ${state.duration} minutes de lecture à voix haute. Pendant ma lecture, ne m'interromps pas. À la fin de ma lecture, donne seulement les corrections de prononciation vraiment utiles. Pose ensuite ${state.questions} questions de compréhension, UNE PAR UNE, puis poursuis par une conversation naturelle avec des questions personnelles ou générales liées au même thème. Pendant toute la séance, mémorise discrètement mes erreurs utiles de grammaire, vocabulaire, expression et prononciation, sans transformer chaque réponse en cours. Considère toujours que je travaille en espagnol : si mon clavier ou l'autocorrecteur introduit ponctuellement un mot d'une autre langue, ne change pas de langue et ne le traite pas automatiquement comme une erreur d'espagnol si le contexte montre qu'il s'agit d'un accident de clavier.
+
+RÈGLE DE FIN : lorsque j'écris uniquement « fin » (quelle que soit la casse), termine immédiatement la séance. Fais d'abord un bilan bref et lisible en français avec compréhension, conversation, prononciation, grammaire et vocabulaire. Ensuite ajoute un bloc JSON valide entre balises \`\`\`json et \`\`\`. Ne mets AUCUN texte après ce bloc JSON. Ce JSON sera importé dans mon application.
+
+Le JSON doit respecter cette structure et contenir les données RÉELLES de la séance :
+{
+  "schema":"espanol-b2-coach-v1",
+  "session":{"id":"identifiant unique","date":"ISO-8601","theme":"${state.topic}","reading_minutes":${state.duration},"text":"texte complet lu","comprehension":[{"question":"question exacte","answer":"réponse exacte de l'élève","assessment":"correct|partial|incorrect","notes":"commentaire bref"}],"conversation":[{"question":"question exacte","answer":"réponse exacte de l'élève"}]},
+  "pronunciation":[{"target":"mot ou expression","issue":"problème constaté","tip":"conseil bref","status":"fragile|progress|mastered"}],
+  "grammar":[{"id":"identifiant stable du point","title":"nom court","original":"phrase exacte de l'élève","corrected":"forme corrigée","explanation":"explication courte en français","status":"fragile|progress|mastered","priority":1}],
+  "vocabulary":[{"term":"mot ou expression espagnole","meaning_fr":"sens en français","context":"phrase ou contexte réel de la séance","status":"new|fragile|progress|mastered"}],
+  "games":[{"type":"repair|choice|gap|translate","prompt":"consigne ou question basée sur une erreur réelle","options":["option 1","option 2"],"answer":"bonne réponse","explanation":"explication courte","skill":"point travaillé"}],
+  "summary":{"comprehension_score":0,"comprehension_total":${state.questions},"conversation_level":"B2","notes":"bilan très bref"}
+}
+
+Règles JSON : conserve le texte, les questions et les réponses mot pour mot autant que possible. Ne crée des entrées grammar/vocabulary/pronunciation que lorsqu'elles sont pédagogiquement utiles. Les jeux doivent cibler prioritairement les erreurs réellement observées. Pour grammar.status et vocabulary.status, utilise fragile si l'erreur est claire ou répétée, progress si le point est en voie d'acquisition, mastered seulement si la maîtrise est réellement démontrée. Le JSON doit être strictement valide.`}
+
+document.getElementById('startBtn').onclick=()=>{
+  const box=document.getElementById('sessionBox');box.classList.add('show');
+  document.getElementById('topicPill').textContent=state.topic;document.getElementById('timePill').textContent=state.duration+' min';document.getElementById('qPill').textContent=state.questions+' questions';
+  setTimeout(()=>box.scrollIntoView({behavior:'smooth',block:'start'}),80)
+};
+document.getElementById('hideSessionBtn').onclick=()=>document.getElementById('sessionBox').classList.remove('show');
+document.getElementById('copyBtn').onclick=async()=>{const text=buildPrompt();try{await navigator.clipboard.writeText(text);const b=document.getElementById('copyBtn');b.textContent='✅ Consigne copiée';setTimeout(()=>b.textContent='Copier la consigne ChatGPT',1800)}catch(e){alert(text)}};
+
+function statusMeta(s){s=(s||'progress').toLowerCase();if(['fragile','incorrect'].includes(s))return['🔴','red','Fragile'];if(['new'].includes(s))return['✨','blue','Nouveau'];if(['mastered','acquis','solid'].includes(s))return['🟢','green','Maîtrisé'];return['🟠','orange','En progrès']}
+function escapeHtml(v=''){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function renderAll(){renderProgress();renderGames();renderGrammar();renderVocab();save()}
+function renderProgress(){
+  sessionCount.textContent=db.sessions.length;gameCount.textContent=db.games.length;grammarCount.textContent=db.grammar.length;vocabCount.textContent=db.vocab.length;
+  if(db.sessions.length){const s=db.sessions[0];lastSession.textContent=`Dernière séance : ${s.theme||'—'}${s.date?' • '+new Date(s.date).toLocaleDateString('fr-FR'):''}`}
+}
+function renderGames(){const el=document.getElementById('gamesList');if(!db.games.length){el.innerHTML='<div class="empty">Aucun jeu pour l’instant.<br>Ils apparaîtront après le premier import de séance.</div>';return}
+  el.innerHTML=db.games.slice(0,60).map((g,i)=>`<div class="item"><div class="gameType">${escapeHtml(g.type||'exercice')}</div><b>${escapeHtml(g.prompt||'')}</b>${Array.isArray(g.options)&&g.options.length?`<div class="muted">${g.options.map(o=>'• '+escapeHtml(o)).join('<br>')}</div>`:''}<button class="smallBtn" onclick="toggleAnswer(${i})">Voir la réponse</button><div class="answer" id="ans-${i}"><b>${escapeHtml(g.answer||'')}</b><span class="muted">${escapeHtml(g.explanation||'')}</span></div></div>`).join('')}
+window.toggleAnswer=i=>document.getElementById('ans-'+i).classList.toggle('show');
+function renderGrammar(){const el=document.getElementById('grammarList');if(!db.grammar.length){el.innerHTML='<div class="empty">Les fiches de grammaire seront créées à partir des difficultés réellement rencontrées.</div>';return}
+  el.innerHTML=db.grammar.map(g=>{const [ico,cls,label]=statusMeta(g.status);return `<div class="item"><span class="level ${cls}">${ico} ${label}</span><b>${escapeHtml(g.title||'Point de grammaire')}</b>${g.original?`<div class="muted">❌ ${escapeHtml(g.original)}</div>`:''}${g.corrected?`<div class="muted">✅ ${escapeHtml(g.corrected)}</div>`:''}<div class="muted" style="margin-top:6px">${escapeHtml(g.explanation||'')}</div><div class="tiny">Vu ${g.count||1} fois</div></div>`}).join('')}
+function renderVocab(){const el=document.getElementById('vocabList');if(!db.vocab.length){el.innerHTML='<div class="empty">Les mots et expressions utiles apparaîtront ici avec leur contexte réel.</div>';return}
+  el.innerHTML=db.vocab.map(v=>{const [ico,cls,label]=statusMeta(v.status);return `<div class="item"><span class="level ${cls}">${ico} ${label}</span><b>${escapeHtml(v.term||'')}</b><div class="muted">${escapeHtml(v.meaning_fr||'')}</div>${v.context?`<div class="muted" style="margin-top:6px">« ${escapeHtml(v.context)} »</div>`:''}<div class="tiny">Vu ${v.count||1} fois</div></div>`}).join('')}
+
+function extractJson(text){
+  text=(text||'').trim();
+  const fence=text.match(/```json\s*([\s\S]*?)```/i);if(fence)text=fence[1].trim();
+  const first=text.indexOf('{'),last=text.lastIndexOf('}');if(first<0||last<=first)throw new Error('Aucune donnée de séance trouvée.');
+  const obj=JSON.parse(text.slice(first,last+1));if(!obj.session)throw new Error('Le contenu ne ressemble pas à une séance Español B2.');return obj
+}
+function mergeByKey(target,incoming,keyFn){incoming.forEach(x=>{if(!x)return;const k=keyFn(x);if(!k)return;const idx=target.findIndex(y=>keyFn(y)===k);if(idx>=0){target[idx]={...target[idx],...x,count:(target[idx].count||1)+1,lastSeen:new Date().toISOString()}}else target.unshift({...x,count:1,lastSeen:new Date().toISOString()})})}
+function importData(obj){
+  const s=obj.session||{};if(!s.id)s.id='session-'+Date.now();if(!s.date)s.date=new Date().toISOString();
+  db.sessions=db.sessions.filter(x=>x.id!==s.id);db.sessions.unshift(s);db.sessions=db.sessions.slice(0,50);
+  mergeByKey(db.grammar,obj.grammar||[],x=>(x.id||x.title||'').toLowerCase().trim());
+  mergeByKey(db.vocab,obj.vocabulary||obj.vocab||[],x=>(x.term||'').toLowerCase().trim());
+  (obj.games||[]).forEach(g=>{const k=(g.prompt||'').trim().toLowerCase();if(k&&!db.games.some(x=>(x.prompt||'').trim().toLowerCase()===k))db.games.unshift({...g,session_id:s.id})});db.games=db.games.slice(0,100);
+  renderAll();
+  const res=document.getElementById('importResult');const nG=(obj.games||[]).length,nGr=(obj.grammar||[]).length,nV=(obj.vocabulary||obj.vocab||[]).length;
+  res.className='importResult show';res.innerHTML=`✅ <b>Séance importée</b><br>🎮 ${nG} jeu${nG>1?'x':''} • 📚 ${nGr} point${nGr>1?'s':''} de grammaire • 🗣️ ${nV} mot${nV>1?'s':''} / expression${nV>1?'s':''}`;
+  setTimeout(()=>res.scrollIntoView({behavior:'smooth',block:'center'}),100)
+}
+async function importClipboard(){
+  const res=document.getElementById('importResult');res.className='importResult';document.getElementById('fallback').classList.remove('show');
+  try{const text=await navigator.clipboard.readText();const obj=extractJson(text);importData(obj)}catch(e){res.className='importResult show error';res.innerHTML=`Je n’ai pas pu lire automatiquement le presse-papiers.<br><b>${escapeHtml(e.message||'')}</b><br>Colle simplement la réponse de ChatGPT ci-dessous.`;document.getElementById('fallback').classList.add('show')}
+}
+document.getElementById('importBtn').onclick=importClipboard;
+document.getElementById('manualImportBtn').onclick=()=>{try{importData(extractJson(document.getElementById('pasteArea').value));document.getElementById('fallback').classList.remove('show');document.getElementById('pasteArea').value=''}catch(e){const res=document.getElementById('importResult');res.className='importResult show error';res.textContent='❌ '+(e.message||'Import impossible')}};
+
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));document.getElementById(b.dataset.tab).classList.add('active');b.classList.add('active');window.scrollTo({top:0,behavior:'smooth'})});
+renderTopics();renderQuestions();renderAll();
 </script>
 </body>
 </html>
