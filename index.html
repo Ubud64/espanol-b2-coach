@@ -68,15 +68,15 @@
       </div>
 
       <button class="primary" id="launchChatBtn">🚀 Commencer ma séance</button>
-      <p class="tiny" style="text-align:center">La consigne sera copiée automatiquement puis ChatGPT s’ouvrira.</p>
+      <p class="tiny" style="text-align:center">La consigne est copiée automatiquement. L’application tente ensuite d’ouvrir un nouveau chat ChatGPT.</p>
     </div>
 
     <!-- RETOUR : affiché automatiquement après le passage dans ChatGPT -->
     <div id="returnView" class="view">
       <div class="card returnHero">
         <h2>📥 Retour de séance</h2>
-        <p>Dans ChatGPT, écris uniquement <b>fin</b>. Quand le bilan apparaît, copie la réponse complète puis reviens ici.</p>
-        <button class="primary" id="importBtn">Importer ma séance</button>
+        <p>Après avoir écrit <b>fin</b> dans ChatGPT, touche simplement <b>Copier</b> sur le bloc JSON puis reviens ici. L’application essaiera de récupérer la séance automatiquement.</p>
+        <button class="primary" id="importBtn">📥 Récupérer ma séance</button>
 
         <div class="importResult" id="importResult"></div>
 
@@ -84,6 +84,7 @@
           <div class="label">Si l’iPhone bloque le presse-papiers</div>
           <textarea id="pasteArea" lang="es" spellcheck="true" placeholder="Colle ici la réponse complète de ChatGPT…"></textarea>
           <button class="secondary" id="manualImportBtn">Importer ce contenu</button>
+          <p class="tiny">Ce champ n’apparaît qu’en secours si iOS refuse l’accès au presse-papiers.</p>
         </div>
 
         <div class="successBox" id="successBox">
@@ -117,7 +118,7 @@
 </nav>
 
 <script>
-const APP_VERSION='2.2';
+const APP_VERSION='2.3';
 const topics=[
   ['🌍','Voyage'],
   ['📰','Actualité'],
@@ -151,7 +152,7 @@ function renderQuestions(){qseg.innerHTML='';[3,4,5].forEach(n=>{const b=documen
 
 function buildPrompt(){return `Tu es mon coach d'espagnol niveau B2. Crée une séance sur le thème « ${state.topic} ». Commence par un texte en espagnol prévu pour environ ${state.duration} minutes de lecture à voix haute. Pendant ma lecture, ne m'interromps pas. À la fin de ma lecture, donne seulement les corrections de prononciation vraiment utiles. Pose ensuite ${state.questions} questions de compréhension, UNE PAR UNE, puis poursuis par une conversation naturelle avec des questions personnelles ou générales liées au même thème. Pendant toute la séance, mémorise discrètement mes erreurs utiles de grammaire, vocabulaire, expression et prononciation, sans transformer chaque réponse en cours. Considère toujours que je travaille en espagnol : si mon clavier ou l'autocorrecteur introduit ponctuellement un mot d'une autre langue, ne change pas de langue et ne le traite pas automatiquement comme une erreur d'espagnol si le contexte montre qu'il s'agit d'un accident de clavier.
 
-RÈGLE DE FIN : lorsque j'écris uniquement « fin » (quelle que soit la casse), termine immédiatement la séance. Fais d'abord un bilan bref et lisible en français avec compréhension, conversation, prononciation, grammaire et vocabulaire. Ensuite ajoute un bloc JSON valide entre balises \`\`\`json et \`\`\`. Ne mets AUCUN texte après ce bloc JSON. Ce JSON sera importé dans mon application.
+RÈGLE DE FIN : lorsque j'écris uniquement « fin » (quelle que soit la casse), termine immédiatement la séance. Fais d'abord un bilan bref et lisible en français avec compréhension, conversation, prononciation, grammaire et vocabulaire. Ensuite affiche UN SEUL bloc de code JSON valide entre balises \`\`\`json et \`\`\`. Ne mets AUCUN texte après ce bloc JSON. Le bloc JSON doit être le dernier élément de ta réponse afin que je puisse utiliser directement son bouton Copier dans ChatGPT. Ce JSON sera importé dans mon application.
 
 Le JSON doit respecter cette structure et contenir les données RÉELLES de la séance :
 {
@@ -202,11 +203,38 @@ function showHome(){
 function showReturn(){
   document.getElementById('homeView').classList.remove('show');
   document.getElementById('returnView').classList.add('show');
+  const res=document.getElementById('importResult');
+  if(res && !res.classList.contains('show')){
+    res.className='importResult show';
+    res.innerHTML='🔄 Retour détecté. Je cherche la séance copiée…<br><span class="tiny">Si iOS bloque l’accès automatique au presse-papiers, touche simplement « Récupérer ma séance ».</span>';
+  }
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function openChatGPTNewChat(prompt){
+  // Best effort on iPhone:
+  // 1) try the native app with a "new" route and prompt parameter;
+  // 2) if unsupported, fall back to opening the native app itself.
+  // The prompt is already on the clipboard in every case.
+  const encoded=encodeURIComponent(prompt);
+  const nativeNew=`chatgpt://new?prompt=${encoded}`;
+
+  let leftPage=false;
+  const onHide=()=>{ if(document.hidden) leftPage=true; };
+  document.addEventListener('visibilitychange',onHide,{once:true});
+
+  window.location.href=nativeNew;
+
+  setTimeout(()=>{
+    if(!leftPage && !document.hidden){
+      window.location.href='chatgpt://';
+    }
+  },900);
 }
 
 document.getElementById('launchChatBtn').onclick=async()=>{
   const b=document.getElementById('launchChatBtn');
+  const prompt=buildPrompt();
   const ok=await copySessionPrompt();
 
   if(!ok){
@@ -215,22 +243,51 @@ document.getElementById('launchChatBtn').onclick=async()=>{
   }
 
   db.awaitingReturn=true;
+  db.launchedAt=new Date().toISOString();
   save();
 
   b.textContent='✅ Consigne copiée · ouverture…';
   b.disabled=true;
 
-  setTimeout(()=>{ window.location.href='chatgpt://'; },120);
+  openChatGPTNewChat(prompt);
 
   setTimeout(()=>{
     b.disabled=false;
     b.textContent='🚀 Commencer ma séance';
-  },1600);
+  },1800);
 };
+
+let autoImportBusy=false;
+
+async function tryAutoImportOnReturn(){
+  if(!db.awaitingReturn || autoImportBusy) return;
+  autoImportBusy=true;
+  try{
+    const clip=await navigator.clipboard.readText();
+    if(clip && clip.includes('{')){
+      const obj=extractJson(clip);
+      importData(obj);
+      return;
+    }
+  }catch(e){
+    // iOS/WebKit often requires a tap to read the clipboard.
+    // Keep the return screen visible and let the user use the single recovery button.
+  }finally{
+    autoImportBusy=false;
+  }
+}
 
 document.addEventListener('visibilitychange',()=>{
   if(!document.hidden && db.awaitingReturn){
     showReturn();
+    setTimeout(tryAutoImportOnReturn,250);
+  }
+});
+
+window.addEventListener('pageshow',()=>{
+  if(db.awaitingReturn){
+    showReturn();
+    setTimeout(tryAutoImportOnReturn,250);
   }
 });
 
@@ -284,8 +341,19 @@ function importData(obj){
   setTimeout(()=>res.scrollIntoView({behavior:'smooth',block:'center'}),100)
 }
 async function importClipboard(){
-  const res=document.getElementById('importResult');res.className='importResult';document.getElementById('fallback').classList.remove('show');
-  try{const text=await navigator.clipboard.readText();const obj=extractJson(text);importData(obj)}catch(e){res.className='importResult show error';res.innerHTML=`Je n’ai pas pu lire automatiquement le presse-papiers.<br><b>${escapeHtml(e.message||'')}</b><br>Colle simplement la réponse de ChatGPT ci-dessous.`;document.getElementById('fallback').classList.add('show')}
+  const res=document.getElementById('importResult');
+  res.className='importResult show';
+  res.innerHTML='🔄 Récupération de la séance…';
+  document.getElementById('fallback').classList.remove('show');
+  try{
+    const clip=await navigator.clipboard.readText();
+    const obj=extractJson(clip);
+    importData(obj);
+  }catch(e){
+    res.className='importResult show error';
+    res.innerHTML=`Je n’ai pas pu récupérer automatiquement la séance.<br><b>${escapeHtml(e.message||'')}</b><br>Dernier recours : colle le contenu ci-dessous.`;
+    document.getElementById('fallback').classList.add('show');
+  }
 }
 document.getElementById('importBtn').onclick=importClipboard;
 document.getElementById('manualImportBtn').onclick=()=>{try{importData(extractJson(document.getElementById('pasteArea').value));document.getElementById('fallback').classList.remove('show');document.getElementById('pasteArea').value=''}catch(e){const res=document.getElementById('importResult');res.className='importResult show error';res.textContent='❌ '+(e.message||'Import impossible')}};
@@ -304,7 +372,12 @@ document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
 renderTopics();
 renderQuestions();
 renderAll();
-if(db.awaitingReturn) showReturn(); else showHome();
+if(db.awaitingReturn){
+  showReturn();
+  setTimeout(tryAutoImportOnReturn,400);
+}else{
+  showHome();
+}
 </script>
 </body>
 </html>
