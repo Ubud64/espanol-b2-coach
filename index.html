@@ -33,6 +33,13 @@
     nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(720px,100%);background:rgba(255,253,249,.95);backdrop-filter:blur(16px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:5}nav button{border:0;background:transparent;padding:7px 2px;color:var(--muted);font-weight:800;font-size:11px}nav button.active{color:var(--accent)}nav span{display:block;font-size:20px;margin-bottom:2px}
     section{display:none}section.active{display:block}
     .sessionHistory{font-size:12px;color:var(--muted);margin-top:8px}
+    .view{display:none}.view.show{display:block}
+    .welcome{margin:2px 0 16px;color:var(--muted);font-size:14px;line-height:1.45}
+    .returnHero{background:linear-gradient(135deg,#fff2e8,#fffaf1);border:1px solid #f1d5bf}
+    .returnHero h2{font-size:24px}
+    .successBox{display:none;margin-top:12px}.successBox.show{display:block}
+    .miniAction{margin-top:10px}
+    
   </style>
 </head>
 <body>
@@ -40,51 +47,53 @@
   <header><div class="brand"><h1>Español B2 🇪🇸</h1><p>Lire • comprendre • parler • progresser</p></div><div class="badge">B2</div></header>
 
   <section id="session" class="active">
-    <div class="card importHero">
-      <h2>📥 Retour de séance</h2>
-      <p>Après avoir écrit <b>fin</b> dans ChatGPT, copie sa réponse puis reviens ici.</p>
-      <button class="primary" id="importBtn">Importer ma séance</button>
-      <div class="importResult" id="importResult"></div>
-      <div class="fallback" id="fallback">
-        <div class="label">Collage manuel si l’iPhone bloque l’accès au presse-papiers</div>
-        <textarea id="pasteArea" lang="es" spellcheck="true" placeholder="Colle ici la réponse complète de ChatGPT…"></textarea>
-        <button class="secondary" id="manualImportBtn">Importer ce contenu</button>
+
+    <!-- ACCUEIL : uniquement thèmes + réglages -->
+    <div id="homeView" class="view show">
+      <div class="card">
+        <h2>De quoi as-tu envie aujourd’hui ? 🇪🇸</h2>
+        <p class="welcome">Choisis simplement un thème, la durée de lecture et le nombre de questions.</p>
+        <div class="topics" id="topics"></div>
+      </div>
+
+      <div class="card">
+        <div class="label">Durée de lecture</div>
+        <div class="rangeRow">
+          <input id="duration" type="range" min="3" max="10" value="5"/>
+          <div class="value"><span id="durationValue">5</span> min</div>
+        </div>
+
+        <div class="label" style="margin-top:18px">Questions de compréhension</div>
+        <div class="seg" id="questionSeg"></div>
+      </div>
+
+      <button class="primary" id="launchChatBtn">🚀 Commencer ma séance</button>
+      <p class="tiny" style="text-align:center">La consigne sera copiée automatiquement puis ChatGPT s’ouvrira.</p>
+    </div>
+
+    <!-- RETOUR : affiché automatiquement après le passage dans ChatGPT -->
+    <div id="returnView" class="view">
+      <div class="card returnHero">
+        <h2>📥 Retour de séance</h2>
+        <p>Dans ChatGPT, écris uniquement <b>fin</b>. Quand le bilan apparaît, copie la réponse complète puis reviens ici.</p>
+        <button class="primary" id="importBtn">Importer ma séance</button>
+
+        <div class="importResult" id="importResult"></div>
+
+        <div class="fallback" id="fallback">
+          <div class="label">Si l’iPhone bloque le presse-papiers</div>
+          <textarea id="pasteArea" lang="es" spellcheck="true" placeholder="Colle ici la réponse complète de ChatGPT…"></textarea>
+          <button class="secondary" id="manualImportBtn">Importer ce contenu</button>
+        </div>
+
+        <div class="successBox" id="successBox">
+          <button class="secondary miniAction" id="newSessionBtn">➕ Nouvelle séance</button>
+        </div>
+
+        <button class="secondary ghost miniAction" id="backHomeBtn">← Retour aux thèmes</button>
       </div>
     </div>
 
-    <div class="card" id="progressCard">
-      <h2>Progression</h2>
-      <div class="stats">
-        <div class="stat"><div class="n" id="sessionCount">0</div><div class="t">séances importées</div></div>
-        <div class="stat"><div class="n" id="gameCount">0</div><div class="t">jeux disponibles</div></div>
-        <div class="stat"><div class="n" id="grammarCount">0</div><div class="t">points de grammaire</div></div>
-        <div class="stat"><div class="n" id="vocabCount">0</div><div class="t">mots / expressions</div></div>
-      </div>
-      <div class="sessionHistory" id="lastSession">Aucune séance importée pour l’instant.</div>
-    </div>
-
-    <div class="card">
-      <h2>Quelle humeur aujourd’hui ?</h2>
-      <div class="topics" id="topics"></div>
-    </div>
-
-    <div class="card">
-      <div class="label">Durée de lecture</div>
-      <div class="rangeRow"><input id="duration" type="range" min="3" max="10" value="5"/><div class="value"><span id="durationValue">5</span> min</div></div>
-      <div class="label" style="margin-top:18px">Questions de compréhension</div>
-      <div class="seg" id="questionSeg"></div>
-    </div>
-
-    <button class="primary" id="startBtn">Créer ma séance</button>
-
-    <div class="card sessionBox" id="sessionBox">
-      <h2>Séance prête 🎙️</h2>
-      <div class="status"><div class="pill" id="topicPill"></div><div class="pill" id="timePill"></div><div class="pill" id="qPill"></div></div>
-      <p class="instruction">La consigne est prête. Copie-la dans ChatGPT puis fais toute la séance là-bas. Quand tu veux arrêter, écris uniquement <b>fin</b>.</p>
-      <button class="secondary" id="copyBtn">Copier la consigne ChatGPT</button>
-      <div class="twoBtns"><a href="https://chatgpt.com/" style="text-decoration:none"><button class="secondary ghost" style="height:100%">Ouvrir ChatGPT</button></a><button class="secondary ghost" id="hideSessionBtn">Masquer</button></div>
-      <p class="tiny">Le coach traite la séance comme de l’espagnol même si l’autocorrecteur du clavier introduit ponctuellement un mot d’une autre langue.</p>
-    </div>
   </section>
 
   <section id="games">
@@ -108,7 +117,24 @@
 </nav>
 
 <script>
-const topics=[['🌍','Voyage'],['📰','Actualité'],['🎭','Culture'],['🍽️','Gastronomie'],['🧠','Société'],['🎬','Cinéma'],['🌿','Nature'],['🎲','Surprise']];
+const APP_VERSION='2.2';
+const topics=[
+  ['🌍','Voyage'],
+  ['📰','Actualité'],
+  ['🎭','Culture'],
+  ['🍽️','Gastronomie'],
+  ['🧠','Société'],
+  ['🎬','Cinéma'],
+  ['🌿','Nature'],
+  ['🏛️','Histoire'],
+  ['☕','Vie quotidienne'],
+  ['🇪🇸','Espagne'],
+  ['🌎','Amérique latine'],
+  ['💭','Psychologie'],
+  ['🔬','Sciences & technologie'],
+  ['📚','Art & littérature'],
+  ['🎲','Surprise']
+];
 const STORAGE='esb2-v2';
 let db=JSON.parse(localStorage.getItem(STORAGE)||'{}');
 db.settings=db.settings||{topic:'Voyage',duration:5,questions:3};
@@ -140,20 +166,93 @@ Le JSON doit respecter cette structure et contenir les données RÉELLES de la s
 
 Règles JSON : conserve le texte, les questions et les réponses mot pour mot autant que possible. Ne crée des entrées grammar/vocabulary/pronunciation que lorsqu'elles sont pédagogiquement utiles. Les jeux doivent cibler prioritairement les erreurs réellement observées. Pour grammar.status et vocabulary.status, utilise fragile si l'erreur est claire ou répétée, progress si le point est en voie d'acquisition, mastered seulement si la maîtrise est réellement démontrée. Le JSON doit être strictement valide.`}
 
-document.getElementById('startBtn').onclick=()=>{
-  const box=document.getElementById('sessionBox');box.classList.add('show');
-  document.getElementById('topicPill').textContent=state.topic;document.getElementById('timePill').textContent=state.duration+' min';document.getElementById('qPill').textContent=state.questions+' questions';
-  setTimeout(()=>box.scrollIntoView({behavior:'smooth',block:'start'}),80)
+
+async function copySessionPrompt(){
+  const prompt=buildPrompt();
+  try{
+    await navigator.clipboard.writeText(prompt);
+    return true;
+  }catch(e){
+    try{
+      const ta=document.createElement('textarea');
+      ta.value=prompt;
+      ta.setAttribute('readonly','');
+      ta.style.position='fixed';
+      ta.style.opacity='0';
+      document.body.appendChild(ta);
+      ta.select();
+      const ok=document.execCommand('copy');
+      ta.remove();
+      return !!ok;
+    }catch(err){
+      return false;
+    }
+  }
+}
+
+
+function showHome(){
+  db.awaitingReturn=false;
+  save();
+  document.getElementById('homeView').classList.add('show');
+  document.getElementById('returnView').classList.remove('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showReturn(){
+  document.getElementById('homeView').classList.remove('show');
+  document.getElementById('returnView').classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.getElementById('launchChatBtn').onclick=async()=>{
+  const b=document.getElementById('launchChatBtn');
+  const ok=await copySessionPrompt();
+
+  if(!ok){
+    alert('Impossible de copier automatiquement la consigne. Réessaie après avoir autorisé le presse-papiers.');
+    return;
+  }
+
+  db.awaitingReturn=true;
+  save();
+
+  b.textContent='✅ Consigne copiée · ouverture…';
+  b.disabled=true;
+
+  setTimeout(()=>{ window.location.href='chatgpt://'; },120);
+
+  setTimeout(()=>{
+    b.disabled=false;
+    b.textContent='🚀 Commencer ma séance';
+  },1600);
 };
-document.getElementById('hideSessionBtn').onclick=()=>document.getElementById('sessionBox').classList.remove('show');
-document.getElementById('copyBtn').onclick=async()=>{const text=buildPrompt();try{await navigator.clipboard.writeText(text);const b=document.getElementById('copyBtn');b.textContent='✅ Consigne copiée';setTimeout(()=>b.textContent='Copier la consigne ChatGPT',1800)}catch(e){alert(text)}};
+
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden && db.awaitingReturn){
+    showReturn();
+  }
+});
+
+document.getElementById('backHomeBtn').onclick=showHome;
+document.getElementById('newSessionBtn').onclick=showHome;
+
 
 function statusMeta(s){s=(s||'progress').toLowerCase();if(['fragile','incorrect'].includes(s))return['🔴','red','Fragile'];if(['new'].includes(s))return['✨','blue','Nouveau'];if(['mastered','acquis','solid'].includes(s))return['🟢','green','Maîtrisé'];return['🟠','orange','En progrès']}
 function escapeHtml(v=''){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 function renderAll(){renderProgress();renderGames();renderGrammar();renderVocab();save()}
 function renderProgress(){
-  sessionCount.textContent=db.sessions.length;gameCount.textContent=db.games.length;grammarCount.textContent=db.grammar.length;vocabCount.textContent=db.vocab.length;
-  if(db.sessions.length){const s=db.sessions[0];lastSession.textContent=`Dernière séance : ${s.theme||'—'}${s.date?' • '+new Date(s.date).toLocaleDateString('fr-FR'):''}`}
+  const sc=document.getElementById('sessionCount'), gc=document.getElementById('gameCount'),
+        grc=document.getElementById('grammarCount'), vc=document.getElementById('vocabCount'),
+        ls=document.getElementById('lastSession');
+  if(sc)sc.textContent=db.sessions.length;
+  if(gc)gc.textContent=db.games.length;
+  if(grc)grc.textContent=db.grammar.length;
+  if(vc)vc.textContent=db.vocab.length;
+  if(ls && db.sessions.length){
+    const s=db.sessions[0];
+    ls.textContent=`Dernière séance : ${s.theme||'—'}${s.date?' • '+new Date(s.date).toLocaleDateString('fr-FR'):''}`;
+  }
 }
 function renderGames(){const el=document.getElementById('gamesList');if(!db.games.length){el.innerHTML='<div class="empty">Aucun jeu pour l’instant.<br>Ils apparaîtront après le premier import de séance.</div>';return}
   el.innerHTML=db.games.slice(0,60).map((g,i)=>`<div class="item"><div class="gameType">${escapeHtml(g.type||'exercice')}</div><b>${escapeHtml(g.prompt||'')}</b>${Array.isArray(g.options)&&g.options.length?`<div class="muted">${g.options.map(o=>'• '+escapeHtml(o)).join('<br>')}</div>`:''}<button class="smallBtn" onclick="toggleAnswer(${i})">Voir la réponse</button><div class="answer" id="ans-${i}"><b>${escapeHtml(g.answer||'')}</b><span class="muted">${escapeHtml(g.explanation||'')}</span></div></div>`).join('')}
@@ -179,6 +278,9 @@ function importData(obj){
   renderAll();
   const res=document.getElementById('importResult');const nG=(obj.games||[]).length,nGr=(obj.grammar||[]).length,nV=(obj.vocabulary||obj.vocab||[]).length;
   res.className='importResult show';res.innerHTML=`✅ <b>Séance importée</b><br>🎮 ${nG} jeu${nG>1?'x':''} • 📚 ${nGr} point${nGr>1?'s':''} de grammaire • 🗣️ ${nV} mot${nV>1?'s':''} / expression${nV>1?'s':''}`;
+  db.awaitingReturn=false;
+  save();
+  document.getElementById('successBox').classList.add('show');
   setTimeout(()=>res.scrollIntoView({behavior:'smooth',block:'center'}),100)
 }
 async function importClipboard(){
@@ -188,8 +290,21 @@ async function importClipboard(){
 document.getElementById('importBtn').onclick=importClipboard;
 document.getElementById('manualImportBtn').onclick=()=>{try{importData(extractJson(document.getElementById('pasteArea').value));document.getElementById('fallback').classList.remove('show');document.getElementById('pasteArea').value=''}catch(e){const res=document.getElementById('importResult');res.className='importResult show error';res.textContent='❌ '+(e.message||'Import impossible')}};
 
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));document.getElementById(b.dataset.tab).classList.add('active');b.classList.add('active');window.scrollTo({top:0,behavior:'smooth'})});
-renderTopics();renderQuestions();renderAll();
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
+  document.getElementById(b.dataset.tab).classList.add('active');
+  b.classList.add('active');
+  if(b.dataset.tab==='session'){
+    if(db.awaitingReturn) showReturn(); else showHome();
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+renderTopics();
+renderQuestions();
+renderAll();
+if(db.awaitingReturn) showReturn(); else showHome();
 </script>
 </body>
 </html>
