@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#fff8ef" />
+  <title>Español B2</title>
+  <style>
+    :root{
+      --bg:#fff8ef;--card:#fff;--text:#2a201b;--muted:#786a61;--accent:#d84c3d;--accent2:#f4b84a;
+      --line:#eadfd5;--red:#c94536;--orange:#d98a2b;--green:#388666;--blue:#2c75b9;--purple:#7a5caf;
+      --shadow:0 10px 30px rgba(65,40,25,.08)
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#fff8ef,#fffdf9);color:var(--text)}
+    .app{max-width:720px;margin:0 auto;min-height:100vh;padding:calc(18px + env(safe-area-inset-top)) 16px calc(98px + env(safe-area-inset-bottom))}
+    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.brand h1{font-size:28px;margin:0}.brand p{margin:3px 0 0;color:var(--muted);font-size:14px}.badge{background:#fff1db;border:1px solid #f4d7a0;border-radius:999px;padding:8px 11px;font-weight:800;font-size:13px}
+    .card{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:22px;padding:18px;margin:14px 0}.card h2{font-size:19px;margin:0 0 12px}.label{font-size:13px;font-weight:800;color:var(--muted);margin-bottom:8px}
+    .topics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.topic{border:1px solid var(--line);background:#fff;border-radius:16px;padding:12px;font-size:15px;text-align:left}.topic.active{border-color:var(--accent);background:#fff0ec;color:#8f2c22;font-weight:800}
+    .rangeRow{display:flex;align-items:center;gap:12px}.rangeRow input{width:100%}.value{min-width:78px;text-align:center;background:#fff3e7;border-radius:12px;padding:9px 10px;font-weight:900}
+    .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.seg button{border:1px solid var(--line);background:#fff;border-radius:13px;padding:10px;font-weight:800}.seg button.active{background:#fff0ec;border-color:var(--accent);color:#8f2c22}
+    .primary{width:100%;border:0;background:var(--accent);color:#fff;font-size:17px;font-weight:900;padding:15px 16px;border-radius:16px;box-shadow:0 8px 18px rgba(216,76,61,.2)}
+    .primary:disabled{opacity:.7}.secondary{width:100%;border:1px solid var(--line);background:#fff;color:var(--text);font-size:15px;font-weight:800;padding:13px 14px;border-radius:15px}.ghost{background:#fff9f4}
+    .tiny{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.4}.welcome{margin:2px 0 16px;color:var(--muted);font-size:14px;line-height:1.45}
+    .instruction{background:#fff8e8;border:1px solid #f1dfae;padding:12px;border-radius:14px;font-size:14px;line-height:1.45}
+    .list{display:grid;gap:10px}.item{border:1px solid var(--line);border-radius:15px;padding:12px;background:#fff}.item b{display:block;margin-bottom:4px}.muted{color:var(--muted);font-size:13px;line-height:1.35}.empty{text-align:center;color:var(--muted);padding:24px 8px;line-height:1.5}
+    .level{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 8px;font-size:11px;font-weight:900;margin-bottom:8px}.red{background:#fde8e5;color:#9d2c22}.orange{background:#fff0dc;color:#995b17}.green{background:#e7f5ee;color:#226348}.blue{background:#e8f2fb;color:#245f91}
+    .gameType{font-size:11px;color:var(--blue);font-weight:900;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}.answer{display:none;margin-top:10px;padding:10px;border-radius:12px;background:#f5f2ef}.answer.show{display:block}.smallBtn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:8px 10px;font-weight:800;margin-top:9px}
+    .importResult{display:none;margin-top:12px;padding:12px;background:#eff8f3;border:1px solid #cce6d7;border-radius:14px;color:#235d44;line-height:1.45}.importResult.show{display:block}.error{background:#fff0ee!important;border-color:#f0c8c2!important;color:#8f2c22!important}
+    .fallback{display:none;margin-top:12px}.fallback.show{display:block}.fallback textarea{width:100%;min-height:160px;border:1px solid var(--line);border-radius:14px;padding:12px;font-size:14px;resize:vertical}
+    nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(720px,100%);background:rgba(255,253,249,.95);backdrop-filter:blur(16px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:5}nav button{border:0;background:transparent;padding:7px 2px;color:var(--muted);font-weight:800;font-size:11px}nav button.active{color:var(--accent)}nav span{display:block;font-size:20px;margin-bottom:2px}
+    section{display:none}section.active{display:block}.view{display:none}.view.show{display:block}.returnHero{background:linear-gradient(135deg,#fff2e8,#fffaf1);border:1px solid #f1d5bf}.returnHero h2{font-size:24px}.successBox{display:none;margin-top:12px}.successBox.show{display:block}.miniAction{margin-top:10px}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header><div class="brand"><h1>Español B2 🇪🇸</h1><p>Lire • comprendre • parler • progresser</p></div><div class="badge">B2</div></header>
+
+  <section id="session" class="active">
+    <div id="homeView" class="view show">
+      <div class="card">
+        <h2>De quoi as-tu envie aujourd’hui ? 🇪🇸</h2>
+        <p class="welcome">Choisis simplement un thème, la durée de lecture et le nombre de questions.</p>
+        <div class="topics" id="topics"></div>
+      </div>
+
+      <div class="card">
+        <div class="label">Durée de lecture</div>
+        <div class="rangeRow">
+          <input id="duration" type="range" min="3" max="10" value="5"/>
+          <div class="value"><span id="durationValue">5</span> min</div>
+        </div>
+        <div class="label" style="margin-top:18px">Questions de compréhension</div>
+        <div class="seg" id="questionSeg"></div>
+      </div>
+
+      <button class="primary" id="launchChatBtn">🚀 Commencer ma séance</button>
+      <p class="tiny" style="text-align:center">La consigne est copiée automatiquement, puis le raccourci ouvre un nouveau chat dans le projet ChatGPT « Español B2 ».</p>
+      <div class="card" style="padding:14px;margin-top:12px">
+        <div class="instruction"><b>Dans ChatGPT :</b> touche le champ de message, colle la consigne puis envoie. Le reste de la séance est géré par les instructions du projet.</div>
+      </div>
+    </div>
+
+    <div id="returnView" class="view">
+      <div class="card returnHero">
+        <h2>📥 Retour de séance</h2>
+        <p>Après avoir écrit <b>fin</b> dans ChatGPT, touche <b>Copier</b> sur le bloc JSON, puis reviens ici. L’application essaie de l’importer automatiquement.</p>
+        <button class="primary" id="importBtn">📥 Récupérer ma séance</button>
+        <div class="importResult" id="importResult"></div>
+        <div class="fallback" id="fallback">
+          <div class="label">Si l’iPhone bloque le presse-papiers</div>
+          <textarea id="pasteArea" lang="es" spellcheck="true" placeholder="Colle ici le JSON de fin de séance…"></textarea>
+          <button class="secondary" id="manualImportBtn">Importer ce contenu</button>
+          <p class="tiny">Ce champ n’apparaît qu’en secours si iOS refuse l’accès au presse-papiers.</p>
+        </div>
+        <div class="successBox" id="successBox"><button class="secondary miniAction" id="newSessionBtn">➕ Nouvelle séance</button></div>
+        <button class="secondary ghost miniAction" id="backHomeBtn">← Retour aux thèmes</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="games"><div class="card"><h2>🎮 Jeux</h2><div id="gamesList" class="list"></div></div></section>
+  <section id="grammar"><div class="card"><h2>📚 Grammaire</h2><div id="grammarList" class="list"></div></div></section>
+  <section id="vocab"><div class="card"><h2>🗣️ Vocabulaire</h2><div id="vocabList" class="list"></div></div></section>
+</div>
+
+<nav>
+  <button data-tab="session" class="active"><span>🎙️</span>Séance</button>
+  <button data-tab="games"><span>🎮</span>Jeux</button>
+  <button data-tab="grammar"><span>📚</span>Grammaire</button>
+  <button data-tab="vocab"><span>🗣️</span>Vocab</button>
+</nav>
+
+<script>
+const APP_VERSION='3.1-project';
+const SHORTCUT_NAME='Español B2';
+const topics=[
+  ['🌍','Voyage'],['📰','Actualité'],['🎭','Culture'],['🍽️','Gastronomie'],['🧠','Société'],['🎬','Cinéma'],['🌿','Nature'],['🏛️','Histoire'],['☕','Vie quotidienne'],['🇪🇸','Espagne'],['🌎','Amérique latine'],['🇰🇷','Corée'],['🇲🇺','Île Maurice'],['💭','Psychologie'],['🔬','Sciences & technologie'],['📚','Art & littérature'],['🎲','Surprise']
+];
+const STORAGE='esb2-v2';
+let db=JSON.parse(localStorage.getItem(STORAGE)||'{}');
+db.settings=db.settings||{topic:'Voyage',duration:5,questions:3};db.sessions=db.sessions||[];db.games=db.games||[];db.grammar=db.grammar||[];db.vocab=db.vocab||[];
+const state=db.settings;
+function save(){localStorage.setItem(STORAGE,JSON.stringify(db))}
+
+const topicsEl=document.getElementById('topics');
+function renderTopics(){topicsEl.innerHTML='';topics.forEach(([e,t])=>{const b=document.createElement('button');b.className='topic'+(state.topic===t?' active':'');b.textContent=e+' '+t;b.onclick=()=>{state.topic=t;save();renderTopics()};topicsEl.appendChild(b)})}
+const dur=document.getElementById('duration');dur.value=state.duration;document.getElementById('durationValue').textContent=state.duration;
+dur.oninput=()=>{state.duration=+dur.value;document.getElementById('durationValue').textContent=dur.value;save()};
+const qseg=document.getElementById('questionSeg');
+function renderQuestions(){qseg.innerHTML='';[3,4,5].forEach(n=>{const b=document.createElement('button');b.textContent=n;b.className=state.questions===n?'active':'';b.onclick=()=>{state.questions=n;save();renderQuestions()};qseg.appendChild(b)})}
+
+const topicGuidance={
+  'Corée':'Explore librement la Corée selon la séance : séries et cinéma coréens, culture, société, voyage, cuisine et recettes coréennes, habitudes de vie ou actualité culturelle.',
+  'Île Maurice':'Aborde l’île Maurice du point de vue de futurs expatriés qui envisagent de partager leur année entre environ 6 mois à Dénia, sur la Costa Blanca en Espagne, et le reste à l’île Maurice. Les séances peuvent traiter de la vie quotidienne, de l’installation, des régions où vivre, du climat, de la culture, de la gastronomie, des loisirs, de la mer, des démarches pratiques et de l’intégration, sans transformer la séance en conseil juridique ou fiscal.'
+};
+function buildPrompt(){
+  const guidance=topicGuidance[state.topic]?`\nOrientation du thème : ${topicGuidance[state.topic]}`:'';
+  return `Nouvelle séance Español B2.\nThème : ${state.topic}${guidance}\nDurée de lecture : ${state.duration} minutes\nQuestions de compréhension : ${state.questions}\n\nCommence immédiatement la séance selon les instructions du projet.`;
+}
+
+async function copySessionPrompt(){
+  const prompt=buildPrompt();
+  try{await navigator.clipboard.writeText(prompt);return true}catch(e){
+    try{const ta=document.createElement('textarea');ta.value=prompt;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');ta.remove();return !!ok}catch(err){return false}
+  }
+}
+
+function showHome(){db.awaitingReturn=false;save();document.getElementById('homeView').classList.add('show');document.getElementById('returnView').classList.remove('show');window.scrollTo({top:0,behavior:'smooth'})}
+function showReturn(){document.getElementById('homeView').classList.remove('show');document.getElementById('returnView').classList.add('show');const res=document.getElementById('importResult');if(res&&!res.classList.contains('show')){res.className='importResult show';res.innerHTML='🔄 Retour détecté. Je cherche la séance copiée…<br><span class="tiny">Si iOS bloque le presse-papiers, touche « Récupérer ma séance ».</span>'}window.scrollTo({top:0,behavior:'smooth'})}
+
+function runShortcut(){
+  const url='shortcuts://run-shortcut?name='+encodeURIComponent(SHORTCUT_NAME);
+  window.location.href=url;
+}
+
+document.getElementById('launchChatBtn').onclick=async()=>{
+  const b=document.getElementById('launchChatBtn');
+  const ok=await copySessionPrompt();
+  if(!ok){alert('Impossible de copier automatiquement la consigne. Autorise le presse-papiers puis réessaie.');return}
+  db.awaitingReturn=true;db.launchedAt=new Date().toISOString();save();
+  b.textContent='✅ Consigne copiée · ouverture…';b.disabled=true;
+  runShortcut();
+  setTimeout(()=>{b.disabled=false;b.textContent='🚀 Commencer ma séance'},1800);
+};
+
+let autoImportBusy=false;
+async function tryAutoImportOnReturn(){
+  if(!db.awaitingReturn||autoImportBusy)return;autoImportBusy=true;
+  try{const clip=await navigator.clipboard.readText();if(clip&&clip.includes('{')){const obj=extractJson(clip);importData(obj);return}}catch(e){}finally{autoImportBusy=false}
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&db.awaitingReturn){showReturn();setTimeout(tryAutoImportOnReturn,250)}});
+window.addEventListener('pageshow',()=>{if(db.awaitingReturn){showReturn();setTimeout(tryAutoImportOnReturn,250)}});
+document.getElementById('backHomeBtn').onclick=showHome;document.getElementById('newSessionBtn').onclick=showHome;
+
+function statusMeta(s){s=(s||'progress').toLowerCase();if(['fragile','incorrect'].includes(s))return['🔴','red','Fragile'];if(['new'].includes(s))return['✨','blue','Nouveau'];if(['mastered','acquis','solid'].includes(s))return['🟢','green','Maîtrisé'];return['🟠','orange','En progrès']}
+function escapeHtml(v=''){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function renderAll(){renderGames();renderGrammar();renderVocab();save()}
+function renderGames(){const el=document.getElementById('gamesList');if(!db.games.length){el.innerHTML='<div class="empty">Aucun jeu pour l’instant.<br>Ils apparaîtront après le premier import de séance.</div>';return}el.innerHTML=db.games.slice(0,60).map((g,i)=>`<div class="item"><div class="gameType">${escapeHtml(g.type||'exercice')}</div><b>${escapeHtml(g.prompt||'')}</b>${Array.isArray(g.options)&&g.options.length?`<div class="muted">${g.options.map(o=>'• '+escapeHtml(o)).join('<br>')}</div>`:''}<button class="smallBtn" onclick="toggleAnswer(${i})">Voir la réponse</button><div class="answer" id="ans-${i}"><b>${escapeHtml(g.answer||'')}</b><span class="muted">${escapeHtml(g.explanation||'')}</span></div></div>`).join('')}
+window.toggleAnswer=i=>document.getElementById('ans-'+i).classList.toggle('show');
+function renderGrammar(){const el=document.getElementById('grammarList');if(!db.grammar.length){el.innerHTML='<div class="empty">Les fiches de grammaire seront créées à partir des difficultés réellement rencontrées.</div>';return}el.innerHTML=db.grammar.map(g=>{const [ico,cls,label]=statusMeta(g.status);return `<div class="item"><span class="level ${cls}">${ico} ${label}</span><b>${escapeHtml(g.title||'Point de grammaire')}</b>${g.original?`<div class="muted">❌ ${escapeHtml(g.original)}</div>`:''}${g.corrected?`<div class="muted">✅ ${escapeHtml(g.corrected)}</div>`:''}<div class="muted" style="margin-top:6px">${escapeHtml(g.explanation||'')}</div><div class="tiny">Vu ${g.count||1} fois</div></div>`}).join('')}
+function renderVocab(){const el=document.getElementById('vocabList');if(!db.vocab.length){el.innerHTML='<div class="empty">Les mots et expressions utiles apparaîtront ici avec leur contexte réel.</div>';return}el.innerHTML=db.vocab.map(v=>{const [ico,cls,label]=statusMeta(v.status);return `<div class="item"><span class="level ${cls}">${ico} ${label}</span><b>${escapeHtml(v.term||'')}</b><div class="muted">${escapeHtml(v.meaning_fr||'')}</div>${v.context?`<div class="muted" style="margin-top:6px">« ${escapeHtml(v.context)} »</div>`:''}<div class="tiny">Vu ${v.count||1} fois</div></div>`}).join('')}
+
+function extractJson(text){
+  text=(text||'').trim();const fence=text.match(/```json\s*([\s\S]*?)```/i);if(fence)text=fence[1].trim();const first=text.indexOf('{'),last=text.lastIndexOf('}');if(first<0||last<=first)throw new Error('Aucune donnée de séance trouvée.');const obj=JSON.parse(text.slice(first,last+1));if(!obj.session)throw new Error('Le contenu ne ressemble pas à une séance Español B2.');return obj
+}
+
+function normalizeImported(obj){
+  const out={...obj};
+  const s={...(obj.session||{})};
+  if(Array.isArray(obj.comprehension)&&!Array.isArray(s.comprehension))s.comprehension=obj.comprehension;
+  if(Array.isArray(obj.conversation)&&!Array.isArray(s.conversation))s.conversation=obj.conversation;
+  out.session=s;
+  out.grammar=(obj.grammar||[]).map(g=>({
+    ...g,
+    title:g.title||'Point de grammaire',
+    original:g.original||g.example_user||'',
+    corrected:g.corrected||g.correction||'',
+    explanation:g.explanation||g.rule||'',
+    status:g.status||'progress'
+  }));
+  out.vocabulary=(obj.vocabulary||obj.vocab||[]).map(v=>{
+    const term=v.term||v.better||v.item||'';
+    let context=v.context||v.example||'';
+    if(v.item&&v.better&&v.item!==v.better)context=(context?context+' · ':'')+v.item+' → '+v.better;
+    return {...v,term,meaning_fr:v.meaning_fr||v.meaning||'',context,status:v.status||'progress'};
+  });
+  out.games=(obj.games||[]).map(g=>({...g,options:Array.isArray(g.options)?g.options:[]}));
+  return out;
+}
+
+function mergeByKey(target,incoming,keyFn){incoming.forEach(x=>{if(!x)return;const k=keyFn(x);if(!k)return;const idx=target.findIndex(y=>keyFn(y)===k);if(idx>=0){target[idx]={...target[idx],...x,count:(target[idx].count||1)+1,lastSeen:new Date().toISOString()}}else target.unshift({...x,count:1,lastSeen:new Date().toISOString()})})}
+function importData(rawObj){
+  const obj=normalizeImported(rawObj);const s=obj.session||{};if(!s.id)s.id='session-'+Date.now();if(!s.date)s.date=new Date().toISOString();
+  db.sessions=db.sessions.filter(x=>x.id!==s.id);db.sessions.unshift(s);db.sessions=db.sessions.slice(0,50);
+  mergeByKey(db.grammar,obj.grammar||[],x=>(x.id||x.title||'').toLowerCase().trim());
+  mergeByKey(db.vocab,obj.vocabulary||[],x=>(x.term||'').toLowerCase().trim());
+  (obj.games||[]).forEach(g=>{const k=(g.prompt||'').trim().toLowerCase();if(k&&!db.games.some(x=>(x.prompt||'').trim().toLowerCase()===k))db.games.unshift({...g,session_id:s.id})});db.games=db.games.slice(0,100);
+  renderAll();const res=document.getElementById('importResult');const nG=(obj.games||[]).length,nGr=(obj.grammar||[]).length,nV=(obj.vocabulary||[]).length;
+  res.className='importResult show';res.innerHTML=`✅ <b>Séance importée</b><br>🎮 ${nG} jeu${nG>1?'x':''} • 📚 ${nGr} point${nGr>1?'s':''} de grammaire • 🗣️ ${nV} mot${nV>1?'s':''} / expression${nV>1?'s':''}`;
+  db.awaitingReturn=false;save();document.getElementById('successBox').classList.add('show');setTimeout(()=>res.scrollIntoView({behavior:'smooth',block:'center'}),100)
+}
+
+async function importClipboard(){const res=document.getElementById('importResult');res.className='importResult show';res.innerHTML='🔄 Récupération de la séance…';document.getElementById('fallback').classList.remove('show');try{const clip=await navigator.clipboard.readText();importData(extractJson(clip))}catch(e){res.className='importResult show error';res.innerHTML=`Je n’ai pas pu récupérer automatiquement la séance.<br><b>${escapeHtml(e.message||'')}</b><br>Dernier recours : colle le JSON ci-dessous.`;document.getElementById('fallback').classList.add('show')}}
+document.getElementById('importBtn').onclick=importClipboard;
+document.getElementById('manualImportBtn').onclick=()=>{try{importData(extractJson(document.getElementById('pasteArea').value));document.getElementById('fallback').classList.remove('show');document.getElementById('pasteArea').value=''}catch(e){const res=document.getElementById('importResult');res.className='importResult show error';res.textContent='❌ '+(e.message||'Import impossible')}};
+
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));document.getElementById(b.dataset.tab).classList.add('active');b.classList.add('active');if(b.dataset.tab==='session'){if(db.awaitingReturn)showReturn();else showHome()}window.scrollTo({top:0,behavior:'smooth'})});
+
+renderTopics();renderQuestions();renderAll();if(db.awaitingReturn){showReturn();setTimeout(tryAutoImportOnReturn,400)}else showHome();
+</script>
+</body>
+</html>
