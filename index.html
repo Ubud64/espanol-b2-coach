@@ -34,6 +34,11 @@
     .fallback{display:none;margin-top:12px}.fallback.show{display:block}.fallback textarea{width:100%;min-height:160px;border:1px solid var(--line);border-radius:14px;padding:12px;font-size:14px;resize:vertical}
     nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(720px,100%);background:rgba(255,253,249,.95);backdrop-filter:blur(16px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:5}nav button{border:0;background:transparent;padding:7px 2px;color:var(--muted);font-weight:800;font-size:11px}nav button.active{color:var(--accent)}nav span{display:block;font-size:20px;margin-bottom:2px}
     section{display:none}section.active{display:block}.view{display:none}.view.show{display:block}.returnHero{background:linear-gradient(135deg,#fff2e8,#fffaf1);border:1px solid #f1d5bf}.returnHero h2{font-size:24px}.successBox{display:none;margin-top:12px}.successBox.show{display:block}.miniAction{margin-top:10px}
+    .launchCard{padding:16px;margin-top:12px}
+    .launchSteps{display:grid;gap:10px}
+    .copyStatus{display:none;margin-top:2px;padding:12px;border-radius:14px;background:#eff8f3;border:1px solid #cce6d7;color:#235d44;font-size:14px;line-height:1.45}
+    .copyStatus.show{display:block}
+    .launchHelp{margin:2px 2px 0;color:var(--muted);font-size:13px;line-height:1.5}
   </style>
 </head>
 <body>
@@ -58,10 +63,14 @@
         <div class="seg" id="questionSeg"></div>
       </div>
 
-      <button class="primary" id="launchChatBtn">🚀 Commencer ma séance</button>
-      <p class="tiny" style="text-align:center">La consigne est copiée automatiquement, puis le raccourci ouvre un nouveau chat dans le projet ChatGPT « Español B2 ».</p>
-      <div class="card" style="padding:14px;margin-top:12px">
-        <div class="instruction"><b>Dans ChatGPT :</b> touche le champ de message, colle la consigne puis envoie. Le reste de la séance est géré par les instructions du projet.</div>
+      <div class="card launchCard">
+        <h2>🚀 Lancer la séance</h2>
+        <div class="launchSteps">
+          <button class="primary" id="copyPromptBtn">📋 1 · Copier la consigne</button>
+          <div class="copyStatus" id="copyStatus"></div>
+          <button class="secondary" id="openChatBtn">🤖 2 · Ouvrir ChatGPT</button>
+          <p class="launchHelp">Après ouverture de ChatGPT : touche le champ <b>« Message pour Español B2 »</b>, puis <b>Coller</b> et <b>Envoyer</b>.</p>
+        </div>
       </div>
     </div>
 
@@ -96,7 +105,7 @@
 </nav>
 
 <script>
-const APP_VERSION='3.2-project-written';
+const APP_VERSION='3.3-project-copy';
 const SHORTCUT_NAME='Español B2';
 const topics=[
   ['🌍','Voyage'],['📰','Actualité'],['🎭','Culture'],['🍽️','Gastronomie'],['🧠','Société'],['🎬','Cinéma'],['🌿','Nature'],['🏛️','Histoire'],['☕','Vie quotidienne'],['🇪🇸','Espagne'],['🌎','Amérique latine'],['🇰🇷','Corée'],['🇲🇺','Île Maurice'],['💭','Psychologie'],['🔬','Sciences & technologie'],['📚','Art & littérature'],['🎲','Surprise']
@@ -138,14 +147,25 @@ function runShortcut(){
   window.location.href=url;
 }
 
-document.getElementById('launchChatBtn').onclick=async()=>{
-  const b=document.getElementById('launchChatBtn');
+document.getElementById('copyPromptBtn').onclick=async()=>{
+  const b=document.getElementById('copyPromptBtn');
+  const status=document.getElementById('copyStatus');
   const ok=await copySessionPrompt();
-  if(!ok){alert('Impossible de copier automatiquement la consigne. Autorise le presse-papiers puis réessaie.');return}
-  db.awaitingReturn=true;db.launchedAt=new Date().toISOString();save();
-  b.textContent='✅ Consigne copiée · ouverture…';b.disabled=true;
+  status.className='copyStatus show';
+  if(!ok){
+    status.innerHTML='❌ Je n’ai pas pu copier la consigne. Autorise l’accès au presse-papiers puis réessaie.';
+    return;
+  }
+  status.innerHTML='✅ <b>Consigne copiée.</b><br>Étape suivante : ouvre ChatGPT, touche le champ <b>« Message pour Español B2 »</b>, puis <b>Coller</b> et <b>Envoyer</b>.';
+  b.textContent='✅ Consigne copiée';
+  setTimeout(()=>{b.textContent='📋 1 · Copier la consigne'},2200);
+};
+
+document.getElementById('openChatBtn').onclick=()=>{
+  db.awaitingReturn=true;
+  db.launchedAt=new Date().toISOString();
+  save();
   runShortcut();
-  setTimeout(()=>{b.disabled=false;b.textContent='🚀 Commencer ma séance'},1800);
 };
 
 let autoImportBusy=false;
