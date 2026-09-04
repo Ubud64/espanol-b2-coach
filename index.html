@@ -54,6 +54,17 @@
     .resumeSaved{display:none;margin-top:12px;padding:12px;border-radius:14px;background:#eaf7f0;border:1px solid #c9e7d6;color:#225f45;line-height:1.45}
     .resumeSaved.show{display:block}
 
+  
+    .errorVaultBtn{width:100%;border:1px solid #efc9c3;background:#fff5f3;color:#8f2c22;border-radius:15px;padding:13px 14px;font-size:15px;font-weight:900;text-align:left;margin:2px 0 14px}
+    .errorVault{display:none;margin:0 0 16px}.errorVault.show{display:grid;gap:10px}
+    .errorCard{border:1px solid #efc9c3;background:#fffaf9;border-radius:15px;padding:12px}
+    .errorTop{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:7px}
+    .errorCount{font-size:11px;font-weight:900;border-radius:999px;padding:4px 7px;background:#fff0ee;color:#8f2c22;white-space:nowrap}
+    .errorInputWrap{display:flex;gap:8px;margin-top:10px}.errorInput{min-width:0;flex:1;border:1px solid var(--line);border-radius:13px;padding:11px 12px;font-size:16px}.errorInput:focus{outline:none;border-color:#bca99a;box-shadow:0 0 0 3px rgba(216,76,61,.08)}
+    .errorFeedback{display:none;margin-top:9px;padding:10px 11px;border-radius:12px;font-size:13px;line-height:1.4}.errorFeedback.show{display:block}
+    .errorFeedback.correct{background:#eaf7f0;border:1px solid #c9e7d6;color:#225f45}.errorFeedback.almost{background:#fff4e3;border:1px solid #efd6aa;color:#875218}.errorFeedback.wrong{background:#fff0ee;border:1px solid #efc9c3;color:#8f2c22}
+    .errorAnswer{display:none;margin-top:9px;padding:9px 10px;border-radius:12px;background:#f5f2ef;font-size:13px}.errorAnswer.show{display:block}
+
   </style>
 </head>
 <body>
@@ -118,7 +129,16 @@
     </div>
   </section>
 
-  <section id="games"><div class="card"><h2>🎮 Jeux</h2><p class="gameIntro">✍️ Écris ta réponse avant de vérifier. Produire le mot ou la phrase de mémoire est plus exigeant qu’un simple choix, et c’est justement ce qui aide à mieux retenir.</p><div id="gameStats" class="gameStats"></div><div id="gamesList" class="list"></div></div></section>
+  <section id="games">
+    <div class="card">
+      <h2>🎮 Exercices</h2>
+      <p class="gameIntro">✍️ Les erreurs ne disparaissent pas à la fin d’un cours. Elles reviennent dans les exercices jusqu’à ce qu’elles soient réellement maîtrisées.</p>
+      <div id="gameStats" class="gameStats"></div>
+      <button class="errorVaultBtn" id="errorVaultBtn">🔴 Mes erreurs à maîtriser · <span id="errorVaultCount">0</span></button>
+      <div id="errorVault" class="errorVault"></div>
+      <div id="gamesList" class="list"></div>
+    </div>
+  </section>
   <section id="grammar"><div class="card"><h2>📚 Grammaire</h2><div id="grammarList" class="list"></div></div></section>
   <section id="vocab"><div class="card"><h2>🗣️ Vocabulaire</h2><div id="vocabList" class="list"></div></div></section>
 </div>
@@ -132,7 +152,7 @@
 </nav>
 
 <script>
-const APP_VERSION='3.7-resume-stable';
+const APP_VERSION='3.8-error-memory';
 const SHORTCUT_NAME='Español B2';
 const topics=[
   ['🌍','Voyage'],['📰','Actualité'],['🎭','Culture'],['🍽️','Gastronomie'],['🧠','Société'],['🎬','Cinéma'],['🌿','Nature'],['🏛️','Histoire'],['☕','Vie quotidienne'],['🇪🇸','Espagne'],['🌎','Amérique latine'],['🇰🇷','Corée'],['🇲🇺','Île Maurice'],['💭','Psychologie'],['🔬','Sciences & technologie'],['📚','Art & littérature'],['🎲','Surprise']
@@ -146,6 +166,7 @@ db.games=db.games||[];
 db.grammar=db.grammar||[];
 db.vocab=db.vocab||[];
 db.gameProgress=db.gameProgress||{};
+db.errors=db.errors||[];
 db.resumeDraft=db.resumeDraft||'';
 const state=db.settings;
 function save(){try{localStorage.setItem(STORAGE,JSON.stringify(db));return true}catch(e){console.warn('Sauvegarde locale impossible',e);return false}}
@@ -168,7 +189,15 @@ Thème : ${state.topic}${guidance}
 Durée de lecture : ${state.duration} minutes
 Questions de compréhension : ${state.questions}
 
-Pour les jeux du Résumé final, privilégie environ 2/3 d’exercices de production écrite (fill ou correct : écrire un mot, compléter ou réécrire une phrase) et au maximum 1/3 de QCM. Base-les uniquement sur les difficultés réellement observées.
+MODE VOCAL — RÈGLE ABSOLUE :
+Dès que je commence à lire le texte à voix haute, ne produis AUCUNE réponse, aucun commentaire, aucune correction, aucun encouragement et aucune relance tant que je n’ai pas prononcé exactement « lecture terminée ». Une pause, même longue, une hésitation, une respiration ou une recherche de mot signifie toujours que la lecture continue.
+Pendant mes réponses orales aux questions et pendant la conversation libre, ne me coupe pas. Si je dis « réponse terminée », attends obligatoirement ces mots avant de répondre.
+
+Pour les exercices du Résumé final, privilégie environ 2/3 d’exercices de production écrite (fill ou correct : écrire un mot, compléter ou réécrire une phrase) et au maximum 1/3 de QCM. Base-les uniquement sur les difficultés réellement observées.
+
+Dans le JSON du Résumé final, ajoute aussi un tableau "errors" contenant uniquement les erreurs réellement commises pendant CETTE séance. Pour chaque erreur, utilise si possible :
+{"original":"forme ou phrase erronée","corrected":"forme ou phrase correcte","title":"point concerné","explanation":"explication très courte"}.
+N’invente jamais une erreur pour remplir ce tableau. S’il n’y en a aucune, utilise [].
 
 Après les questions de compréhension, poursuis naturellement en conversation libre, de préférence à l’oral, jusqu’à ce que j’écrive uniquement « fin ».
 
@@ -236,7 +265,7 @@ document.getElementById('openChatBtn').onclick=()=>{
 
 function statusMeta(s){s=(s||'progress').toLowerCase();if(['fragile','incorrect'].includes(s))return['🔴','red','Fragile'];if(['new'].includes(s))return['✨','blue','Nouveau'];if(['mastered','acquis','solid'].includes(s))return['🟢','green','Maîtrisé'];return['🟠','orange','En progrès']}
 function escapeHtml(v=''){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
-function renderAll(){renderGames();renderGrammar();renderVocab();save()}
+function renderAll(){renderErrors();renderGames();renderGrammar();renderVocab();save()}
 function gameKey(g){return ((g.session_id||'')+'|'+(g.prompt||'')+'|'+(g.answer||'')).toLowerCase().trim()}
 function gameTypeLabel(t){t=(t||'').toLowerCase();if(t==='fill')return'✍️ Compléter';if(t==='correct')return'🛠️ Réécrire';if(t==='mcq')return'🧠 Réponse écrite';return'✍️ Exercice'}
 function normalizeAnswer(v,stripAccents=false){
@@ -258,16 +287,178 @@ function answerQuality(user,expected){
   if((max>=6&&sim>=.88)||(max>=18&&sim>=.84))return'almost';
   return'wrong'
 }
+
+function errorIdentity(e){
+  return normalizeAnswer(e.wrong||e.original||'',true)+'|'+normalizeAnswer(e.correct||e.corrected||'',true)
+}
+function activeErrors(){
+  return (db.errors||[]).filter(e=>e.active!==false).sort((a,b)=>String(b.lastSeen||'').localeCompare(String(a.lastSeen||'')))
+}
+function masteredErrors(){
+  return (db.errors||[]).filter(e=>e.active===false)
+}
+function errorStatus(e){
+  if(e.active===false)return'mastered';
+  return (e.successCount||0)>0?'progress':'fragile'
+}
+function upsertError(raw,sessionId){
+  const wrong=String(raw.wrong||raw.original||raw.example_user||'').trim();
+  const correct=String(raw.correct||raw.corrected||raw.correction||raw.better||'').trim();
+  if(!wrong||!correct||normalizeAnswer(wrong,true)===normalizeAnswer(correct,true))return false;
+  const item={
+    key:errorIdentity({wrong,correct}),
+    wrong,
+    correct,
+    point:String(raw.point||raw.title||raw.category||'Expression à corriger').trim(),
+    explanation:String(raw.explanation||raw.rule||'').trim(),
+    active:true,
+    successCount:0,
+    occurrences:1,
+    firstSeen:new Date().toISOString(),
+    lastSeen:new Date().toISOString(),
+    lastSessionId:sessionId||''
+  };
+  const idx=db.errors.findIndex(e=>errorIdentity(e)===item.key);
+  if(idx>=0){
+    const old=db.errors[idx];
+    db.errors[idx]={
+      ...old,
+      ...item,
+      occurrences:(old.occurrences||1)+1,
+      firstSeen:old.firstSeen||item.firstSeen,
+      active:true,
+      successCount:0
+    };
+  }else{
+    db.errors.unshift(item);
+  }
+  return true
+}
+function deriveSessionErrors(obj){
+  const found=[];
+  (obj.errors||[]).forEach(e=>found.push(e));
+  (obj.grammar||[]).forEach(g=>{
+    if((g.original||g.example_user)&&(g.corrected||g.correction))found.push(g);
+  });
+  (obj.vocabulary||[]).forEach(v=>{
+    if(v.item&&v.better&&normalizeAnswer(v.item,true)!==normalizeAnswer(v.better,true)){
+      found.push({original:v.item,corrected:v.better,title:'Vocabulaire / expression',explanation:v.meaning_fr||v.meaning||''});
+    }
+  });
+  const seen=new Set();
+  return found.filter(e=>{
+    const k=errorIdentity({wrong:e.wrong||e.original||e.example_user,correct:e.correct||e.corrected||e.correction||e.better});
+    if(!k||k==='|'||seen.has(k))return false;
+    seen.add(k);return true;
+  })
+}
+function migrateLegacyErrors(){
+  if(db.errorMigrationV38)return;
+  (db.grammar||[]).forEach(g=>{
+    if(g.original&&g.corrected)upsertError(g,'legacy');
+  });
+  (db.vocab||[]).forEach(v=>{
+    if(v.item&&v.better&&normalizeAnswer(v.item,true)!==normalizeAnswer(v.better,true)){
+      upsertError({original:v.item,corrected:v.better,title:'Vocabulaire / expression',explanation:v.meaning_fr||v.meaning||''},'legacy');
+    }
+  });
+  db.errorMigrationV38=true;
+  save();
+}
+function applyErrorResult(key,result){
+  const e=db.errors.find(x=>x.key===key||errorIdentity(x)===key);
+  if(!e)return null;
+  e.lastPractice=new Date().toISOString();
+  if(result==='correct'){
+    e.successCount=(e.successCount||0)+1;
+    if(e.successCount>=3){
+      e.successCount=3;
+      e.active=false;
+      e.masteredAt=new Date().toISOString();
+    }
+  }else if(result==='wrong'){
+    e.successCount=0;
+    e.active=true;
+  }
+  save();
+  return e
+}
+function errorPracticeGames(){
+  return activeErrors().map(e=>({
+    type:'correct',
+    prompt:`Réécris correctement : « ${e.wrong} »`,
+    answer:e.correct,
+    explanation:e.explanation||e.point||'',
+    errorKey:e.key,
+    persistentError:true
+  }))
+}
+let currentErrorPool=[];
+function renderErrors(){
+  const btn=document.getElementById('errorVaultBtn'),count=document.getElementById('errorVaultCount'),vault=document.getElementById('errorVault');
+  if(!btn||!count||!vault)return;
+  currentErrorPool=activeErrors();
+  count.textContent=currentErrorPool.length;
+  btn.innerHTML=`🔴 Mes erreurs à maîtriser · <span id="errorVaultCount">${currentErrorPool.length}</span>`;
+  if(!currentErrorPool.length){
+    vault.innerHTML='<div class="empty">🎉 Aucune erreur active. Une erreur maîtrisée reste néanmoins en mémoire et se réactivera automatiquement si elle revient dans un futur cours.</div>';
+    return;
+  }
+  vault.innerHTML=currentErrorPool.map((e,i)=>{
+    const done=Math.min(e.successCount||0,3);
+    const badge=done?`🟠 ${done}/3 réussites`:'🔴 à maîtriser';
+    return `<div class="errorCard">
+      <div class="errorTop"><div><b>${escapeHtml(e.point||'Expression à corriger')}</b><div class="muted">❌ ${escapeHtml(e.wrong)}</div></div><span class="errorCount">${badge}</span></div>
+      <div class="tiny">Commise ${e.occurrences||1} fois. Pour la maîtriser, réécris correctement sans aide.</div>
+      <div class="errorInputWrap"><input id="error-input-${i}" class="errorInput" type="text" lang="es" autocapitalize="sentences" autocomplete="off" spellcheck="false" placeholder="Réécris correctement…" onkeydown="if(event.key==='Enter'){event.preventDefault();checkErrorRewrite(${i})}"><button class="checkBtn" onclick="checkErrorRewrite(${i})">Vérifier</button></div>
+      <div id="error-feedback-${i}" class="errorFeedback"></div>
+      <button class="smallBtn" onclick="toggleErrorAnswer(${i})">👀 Voir la correction</button>
+      <div id="error-answer-${i}" class="errorAnswer">✅ ${escapeHtml(e.correct)}${e.explanation?`<div class="muted" style="margin-top:5px">${escapeHtml(e.explanation)}</div>`:''}</div>
+    </div>`
+  }).join('')
+}
+window.toggleErrorVault=()=>{const v=document.getElementById('errorVault');if(v)v.classList.toggle('show')};
+window.toggleErrorAnswer=i=>{const el=document.getElementById('error-answer-'+i);if(el)el.classList.toggle('show')};
+window.checkErrorRewrite=i=>{
+  const e=currentErrorPool[i],input=document.getElementById('error-input-'+i),fb=document.getElementById('error-feedback-'+i);
+  if(!e||!input||!fb)return;
+  const user=input.value.trim();
+  if(!user){fb.className='errorFeedback show almost';fb.innerHTML='✍️ Réécris d’abord la phrase complète.';return}
+  const q=answerQuality(user,e.correct);
+  if(q==='correct'){
+    const updated=applyErrorResult(e.key,'correct');
+    if(updated&&updated.active===false){
+      fb.className='errorFeedback show correct';
+      fb.innerHTML='🟢 <b>Maîtrisée.</b> Trois productions correctes : cette erreur quitte la liste active. Si elle revient dans un futur cours, elle sera automatiquement réactivée.';
+      setTimeout(()=>renderAll(),1100);
+    }else{
+      fb.className='errorFeedback show correct';
+      fb.innerHTML=`✅ <b>Exact.</b> ${Math.min((updated&&updated.successCount)||1,3)}/3 productions correctes. Elle restera dans les exercices jusqu’à maîtrise.`;
+      renderGames();renderGrammar();
+    }
+  }else if(q==='almost'){
+    fb.className='errorFeedback show almost';
+    fb.innerHTML='🟠 <b>Presque.</b> Corrige encore une fois sans afficher la solution.';
+  }else{
+    applyErrorResult(e.key,'wrong');
+    fb.className='errorFeedback show wrong';
+    fb.innerHTML='🔴 <b>Pas encore.</b> La série de réussites repart à zéro. Essaie à nouveau.';
+    renderGames();renderGrammar();
+  }
+};
+
 function progressLabel(p){if(!p)return'';if(p.lastResult==='correct')return'<span class="progressBadge">🟢 acquis</span>';if(p.lastResult==='almost')return'<span class="progressBadge">🟠 presque</span>';if(p.lastResult==='wrong')return'<span class="progressBadge">🔴 à revoir</span>';return''}
 function renderGameStats(){
   const el=document.getElementById('gameStats');if(!el)return;
   const vals=Object.values(db.gameProgress||{}),ok=vals.filter(x=>x.lastResult==='correct').length,almost=vals.filter(x=>x.lastResult==='almost').length,wrong=vals.filter(x=>x.lastResult==='wrong').length;
-  el.innerHTML=`<span class="gameStat">🟢 ${ok} acquis</span><span class="gameStat">🟠 ${almost} presque</span><span class="gameStat">🔴 ${wrong} à revoir</span>`;
+  el.innerHTML=`<span class="gameStat">🧠 ${activeErrors().length} erreurs actives</span><span class="gameStat">🟢 ${masteredErrors().length} maîtrisées</span><span class="gameStat">🟠 ${almost} presque</span>`;
 }
+let currentGamePool=[];
 function renderGames(){
   const el=document.getElementById('gamesList');renderGameStats();
-  if(!db.games.length){el.innerHTML='<div class="empty">Aucun jeu pour l’instant.<br>Ils apparaîtront après le premier import de séance.</div>';return}
-  el.innerHTML=db.games.slice(0,60).map((g,i)=>{
+  currentGamePool=[...errorPracticeGames(),...db.games].slice(0,60);
+  if(!currentGamePool.length){el.innerHTML='<div class="empty">Aucun exercice pour l’instant.<br>Ils apparaîtront après le premier import de séance.</div>';return}
+  el.innerHTML=currentGamePool.map((g,i)=>{
     const key=gameKey(g),p=db.gameProgress[key],hasHint=Array.isArray(g.options)&&g.options.length;
     return `<div class="item" id="game-${i}">${progressLabel(p)}<div class="gameType">${gameTypeLabel(g.type)}</div><b>${escapeHtml(g.prompt||'')}</b>
       ${hasHint?`<div class="gameActions"><button class="smallBtn" onclick="toggleGameHint(${i})">💡 Voir un indice</button></div><div class="hint" id="hint-${i}">${g.options.map(o=>'• '+escapeHtml(o)).join('<br>')}</div>`:''}
@@ -280,17 +471,34 @@ function renderGames(){
 }
 window.toggleGameHint=i=>{const el=document.getElementById('hint-'+i);if(el)el.classList.toggle('show')};
 window.checkWritten=i=>{
-  const g=db.games[i];if(!g)return;const input=document.getElementById('game-input-'+i),fb=document.getElementById('feedback-'+i);if(!input||!fb)return;
+  const g=currentGamePool[i];if(!g)return;const input=document.getElementById('game-input-'+i),fb=document.getElementById('feedback-'+i);if(!input||!fb)return;
   const user=input.value.trim();if(!user){fb.className='feedback show almost';fb.innerHTML='✍️ Écris d’abord une réponse. Même une tentative imparfaite aide la mémoire.';return}
-  const q=answerQuality(user,g.answer||''),key=gameKey(g),old=db.gameProgress[key]||{attempts:0};old.attempts=(old.attempts||0)+1;old.lastResult=q;old.lastAt=new Date().toISOString();db.gameProgress[key]=old;save();
-  if(q==='correct'){fb.className='feedback show correct';fb.innerHTML=`✅ <b>Exact.</b> Tu l’as produit de mémoire.${g.explanation?`<br>${escapeHtml(g.explanation)}`:''}`;document.getElementById('ans-'+i).classList.remove('show')}
+  const q=answerQuality(user,g.answer||''),key=gameKey(g),old=db.gameProgress[key]||{attempts:0};old.attempts=(old.attempts||0)+1;old.lastResult=q;old.lastAt=new Date().toISOString();db.gameProgress[key]=old;
+  const linkedError=g.errorKey?applyErrorResult(g.errorKey,q):null;
+  save();
+  if(q==='correct'){fb.className='feedback show correct';fb.innerHTML=`✅ <b>Exact.</b> Tu l’as produit de mémoire.${linkedError&&linkedError.active===false?'<br>🟢 Cette erreur est maintenant maîtrisée.':linkedError?`<br>🧠 Maîtrise : ${linkedError.successCount||0}/3 réussites.`:''}${g.explanation?`<br>${escapeHtml(g.explanation)}`:''}`;document.getElementById('ans-'+i).classList.remove('show')}
   else if(q==='almost'){fb.className='feedback show almost';fb.innerHTML=`🟠 <b>Presque.</b> Compare : <b>${escapeHtml(g.answer||'')}</b>${g.explanation?`<br>${escapeHtml(g.explanation)}`:''}`;document.getElementById('ans-'+i).classList.add('show')}
   else{fb.className='feedback show wrong';fb.innerHTML='🔴 <b>À revoir.</b> Essaie encore une fois avant d’afficher la correction.';document.getElementById('ans-'+i).classList.remove('show')}
-  renderGameStats()
+  renderErrors();renderGameStats();renderGrammar()
 };
 window.retryGame=i=>{const input=document.getElementById('game-input-'+i),fb=document.getElementById('feedback-'+i),ans=document.getElementById('ans-'+i);if(input){input.value='';input.focus()}if(fb){fb.className='feedback';fb.innerHTML=''}if(ans)ans.classList.remove('show')};
-window.revealGameAnswer=i=>{const g=db.games[i];if(!g)return;const ans=document.getElementById('ans-'+i),fb=document.getElementById('feedback-'+i),key=gameKey(g),old=db.gameProgress[key]||{attempts:0};old.lastResult=old.lastResult||'wrong';old.revealed=(old.revealed||0)+1;old.lastAt=new Date().toISOString();db.gameProgress[key]=old;save();if(ans)ans.classList.add('show');if(fb&&!fb.classList.contains('show')){fb.className='feedback show wrong';fb.innerHTML='👀 Lis la correction, puis masque-la mentalement et réécris-la une fois.'}renderGameStats()};
-function renderGrammar(){const el=document.getElementById('grammarList');if(!db.grammar.length){el.innerHTML='<div class="empty">Les fiches de grammaire seront créées à partir des difficultés réellement rencontrées.</div>';return}el.innerHTML=db.grammar.map(g=>{const [ico,cls,label]=statusMeta(g.status);return `<div class="item"><span class="level ${cls}">${ico} ${label}</span><b>${escapeHtml(g.title||'Point de grammaire')}</b>${g.original?`<div class="muted">❌ ${escapeHtml(g.original)}</div>`:''}${g.corrected?`<div class="muted">✅ ${escapeHtml(g.corrected)}</div>`:''}<div class="muted" style="margin-top:6px">${escapeHtml(g.explanation||'')}</div><div class="tiny">Vu ${g.count||1} fois</div></div>`}).join('')}
+window.revealGameAnswer=i=>{const g=currentGamePool[i];if(!g)return;const ans=document.getElementById('ans-'+i),fb=document.getElementById('feedback-'+i),key=gameKey(g),old=db.gameProgress[key]||{attempts:0};old.lastResult=old.lastResult||'wrong';old.revealed=(old.revealed||0)+1;old.lastAt=new Date().toISOString();db.gameProgress[key]=old;save();if(ans)ans.classList.add('show');if(fb&&!fb.classList.contains('show')){fb.className='feedback show wrong';fb.innerHTML='👀 Lis la correction, puis masque-la mentalement et réécris-la une fois.'}renderGameStats()};
+function renderGrammar(){
+  const el=document.getElementById('grammarList');
+  const items=[...(db.grammar||[])];
+  (db.errors||[]).forEach(e=>{
+    const exists=items.some(g=>normalizeAnswer(g.original||'',true)===normalizeAnswer(e.wrong||'',true)&&normalizeAnswer(g.corrected||'',true)===normalizeAnswer(e.correct||'',true));
+    if(!exists)items.push({title:e.point||'Expression à corriger',original:e.wrong,corrected:e.correct,explanation:e.explanation||'',_errorKey:e.key});
+  });
+  if(!items.length){el.innerHTML='<div class="empty">Les fiches de grammaire seront créées à partir des difficultés réellement rencontrées.</div>';return}
+  el.innerHTML=items.map(g=>{
+    const linked=db.errors.find(e=>errorIdentity(e)===errorIdentity({wrong:g.original,correct:g.corrected}));
+    const status=linked?errorStatus(linked):(g.status||'progress');
+    const [ico,cls,label]=statusMeta(status);
+    const progress=linked?`<div class="tiny">Maîtrise : ${Math.min(linked.successCount||0,3)}/3 productions correctes · erreur vue ${linked.occurrences||1} fois${linked.active===false?' · réactivation automatique si elle revient':''}</div>`:`<div class="tiny">Vu ${g.count||1} fois</div>`;
+    return `<div class="item"><span class="level ${cls}">${ico} ${label}</span><b>${escapeHtml(g.title||'Point de grammaire')}</b>${g.original?`<div class="muted">❌ ${escapeHtml(g.original)}</div>`:''}${g.corrected?`<div class="muted">✅ ${escapeHtml(g.corrected)}</div>`:''}<div class="muted" style="margin-top:6px">${escapeHtml(g.explanation||'')}</div>${progress}</div>`
+  }).join('')
+}
 function renderVocab(){const el=document.getElementById('vocabList');if(!db.vocab.length){el.innerHTML='<div class="empty">Les mots et expressions utiles apparaîtront ici avec leur contexte réel.</div>';return}el.innerHTML=db.vocab.map(v=>{const [ico,cls,label]=statusMeta(v.status);return `<div class="item"><span class="level ${cls}">${ico} ${label}</span><b>${escapeHtml(v.term||'')}</b><div class="muted">${escapeHtml(v.meaning_fr||'')}</div>${v.context?`<div class="muted" style="margin-top:6px">« ${escapeHtml(v.context)} »</div>`:''}<div class="tiny">Vu ${v.count||1} fois</div></div>`}).join('')}
 
 function extractJson(text){
@@ -318,6 +526,13 @@ function normalizeImported(obj){
     return {...v,term,meaning_fr:v.meaning_fr||v.meaning||'',context,status:v.status||'progress'};
   });
   out.games=(obj.games||[]).map(g=>({...g,options:Array.isArray(g.options)?g.options:[]}));
+  out.errors=(obj.errors||obj.mistakes||[]).map(e=>({
+    ...e,
+    original:e.original||e.wrong||e.example_user||'',
+    corrected:e.corrected||e.correct||e.correction||e.better||'',
+    title:e.title||e.point||e.category||'Expression à corriger',
+    explanation:e.explanation||e.rule||''
+  })).filter(e=>e.original&&e.corrected);
   return out;
 }
 
@@ -325,6 +540,7 @@ function mergeByKey(target,incoming,keyFn){incoming.forEach(x=>{if(!x)return;con
 function importData(rawObj){
   const obj=normalizeImported(rawObj);const s=obj.session||{};if(!s.id)s.id='session-'+Date.now();if(!s.date)s.date=new Date().toISOString();
   db.sessions=db.sessions.filter(x=>x.id!==s.id);db.sessions.unshift(s);db.sessions=db.sessions.slice(0,50);
+  deriveSessionErrors(obj).forEach(e=>upsertError(e,s.id));
   mergeByKey(db.grammar,obj.grammar||[],x=>(x.id||x.title||'').toLowerCase().trim());
   mergeByKey(db.vocab,obj.vocabulary||[],x=>(x.term||'').toLowerCase().trim());
   (obj.games||[]).forEach(g=>{const k=(g.prompt||'').trim().toLowerCase();if(k&&!db.games.some(x=>(x.prompt||'').trim().toLowerCase()===k))db.games.unshift({...g,session_id:s.id})});db.games=db.games.slice(0,100);
@@ -340,7 +556,7 @@ function importData(rawObj){
   const saved=document.getElementById('resumeSaved');
   if(saved){
     saved.className='resumeSaved show';
-    saved.innerHTML=`✅ <b>Séance enregistrée</b><br>🎮 ${nG} jeu${nG>1?'x':''} • 📚 ${nGr} point${nGr>1?'s':''} de grammaire • 🗣️ ${nV} mot${nV>1?'s':''} / expression${nV>1?'s':''}`;
+    saved.innerHTML=`✅ <b>Séance enregistrée</b><br>🎮 ${nG} exercice${nG>1?'s':''} du jour • 📚 ${nGr} point${nGr>1?'s':''} de grammaire • 🧠 ${activeErrors().length} erreur${activeErrors().length>1?'s':''} encore à maîtriser`;
     setTimeout(()=>saved.scrollIntoView({behavior:'smooth',block:'center'}),100);
   }
   renderResumeState();
@@ -401,10 +617,13 @@ document.addEventListener('visibilitychange',()=>{
 });
 window.addEventListener('pageshow',returnToResumeIfNeeded);
 
+document.getElementById('errorVaultBtn').onclick=()=>toggleErrorVault();
+
 document.querySelectorAll('nav button').forEach(b=>{
   b.onclick=()=>activateTab(b.dataset.tab);
 });
 
+migrateLegacyErrors();
 renderTopics();
 renderQuestions();
 renderAll();
