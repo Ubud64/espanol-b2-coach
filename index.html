@@ -152,7 +152,7 @@
 </nav>
 
 <script>
-const APP_VERSION='3.8-error-memory';
+const APP_VERSION='3.9-flexible-resume';
 const SHORTCUT_NAME='Español B2';
 const topics=[
   ['🌍','Voyage'],['📰','Actualité'],['🎭','Culture'],['🍽️','Gastronomie'],['🧠','Société'],['🎬','Cinéma'],['🌿','Nature'],['🏛️','Histoire'],['☕','Vie quotidienne'],['🇪🇸','Espagne'],['🌎','Amérique latine'],['🇰🇷','Corée'],['🇲🇺','Île Maurice'],['💭','Psychologie'],['🔬','Sciences & technologie'],['📚','Art & littérature'],['🎲','Surprise']
@@ -195,9 +195,32 @@ Pendant mes réponses orales aux questions et pendant la conversation libre, ne 
 
 Pour les exercices du Résumé final, privilégie environ 2/3 d’exercices de production écrite (fill ou correct : écrire un mot, compléter ou réécrire une phrase) et au maximum 1/3 de QCM. Base-les uniquement sur les difficultés réellement observées.
 
-Dans le JSON du Résumé final, ajoute aussi un tableau "errors" contenant uniquement les erreurs réellement commises pendant CETTE séance. Pour chaque erreur, utilise si possible :
-{"original":"forme ou phrase erronée","corrected":"forme ou phrase correcte","title":"point concerné","explanation":"explication très courte"}.
-N’invente jamais une erreur pour remplir ce tableau. S’il n’y en a aucune, utilise [].
+Le Résumé final doit être un JSON simple et directement importable. Utilise de préférence cette structure :
+{
+  "theme": "...",
+  "level": "B2",
+  "comprehension": "...",
+  "oral": "...",
+  "focus": ["..."],
+  "errors": [
+    {
+      "original": "forme ou phrase erronée",
+      "corrected": "forme ou phrase correcte",
+      "title": "point concerné",
+      "explanation": "explication très courte"
+    }
+  ],
+  "exercises": [
+    {
+      "type": "fill | correct | qcm",
+      "instruction": "consigne",
+      "answer": "réponse attendue",
+      "options": []
+    }
+  ]
+}
+Dans "errors", mets uniquement les erreurs réellement commises pendant CETTE séance. N’invente jamais une erreur. S’il n’y en a aucune, utilise [].
+Dans "exercises", crée les exercices à partir des difficultés réellement observées.
 
 Après les questions de compréhension, poursuis naturellement en conversation libre, de préférence à l’oral, jusqu’à ce que j’écrive uniquement « fin ».
 
@@ -502,15 +525,48 @@ function renderGrammar(){
 function renderVocab(){const el=document.getElementById('vocabList');if(!db.vocab.length){el.innerHTML='<div class="empty">Les mots et expressions utiles apparaîtront ici avec leur contexte réel.</div>';return}el.innerHTML=db.vocab.map(v=>{const [ico,cls,label]=statusMeta(v.status);return `<div class="item"><span class="level ${cls}">${ico} ${label}</span><b>${escapeHtml(v.term||'')}</b><div class="muted">${escapeHtml(v.meaning_fr||'')}</div>${v.context?`<div class="muted" style="margin-top:6px">« ${escapeHtml(v.context)} »</div>`:''}<div class="tiny">Vu ${v.count||1} fois</div></div>`}).join('')}
 
 function extractJson(text){
-  text=(text||'').trim();const fence=text.match(/```json\s*([\s\S]*?)```/i);if(fence)text=fence[1].trim();const first=text.indexOf('{'),last=text.lastIndexOf('}');if(first<0||last<=first)throw new Error('Aucune donnée de séance trouvée.');const obj=JSON.parse(text.slice(first,last+1));if(!obj.session)throw new Error('Le contenu ne ressemble pas à une séance Español B2.');return obj
+  text=(text||'').trim();
+  const fence=text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  if(fence)text=fence[1].trim();
+  const first=text.indexOf('{'),last=text.lastIndexOf('}');
+  if(first<0||last<=first)throw new Error('Aucune donnée de séance trouvée.');
+  const obj=JSON.parse(text.slice(first,last+1));
+  const looksLikeSession=!!(
+    obj.session ||
+    obj.theme ||
+    obj.level ||
+    obj.errors ||
+    obj.exercises ||
+    obj.games ||
+    obj.grammar ||
+    obj.vocabulary ||
+    obj.vocab ||
+    obj.comprehension ||
+    obj.oral ||
+    obj.focus
+  );
+  if(!looksLikeSession)throw new Error('Le contenu ne ressemble pas à un Résumé Español B2.');
+  return obj
 }
 
 function normalizeImported(obj){
   const out={...obj};
-  const s={...(obj.session||{})};
+
+  // Accepte l'ancien format {session:{...}} ET le nouveau format simple.
+  const existingSession=(obj.session&&typeof obj.session==='object'&&!Array.isArray(obj.session))?obj.session:{};
+  const s={...existingSession};
+
+  if(!s.theme&&obj.theme)s.theme=obj.theme;
+  if(!s.level&&obj.level)s.level=obj.level;
+  if(!s.comprehension_summary&&typeof obj.comprehension==='string')s.comprehension_summary=obj.comprehension;
+  if(!s.oral&&obj.oral)s.oral=obj.oral;
+  if(!s.focus&&obj.focus)s.focus=obj.focus;
+
   if(Array.isArray(obj.comprehension)&&!Array.isArray(s.comprehension))s.comprehension=obj.comprehension;
   if(Array.isArray(obj.conversation)&&!Array.isArray(s.conversation))s.conversation=obj.conversation;
+
   out.session=s;
+
   out.grammar=(obj.grammar||[]).map(g=>({
     ...g,
     title:g.title||'Point de grammaire',
@@ -519,13 +575,24 @@ function normalizeImported(obj){
     explanation:g.explanation||g.rule||'',
     status:g.status||'progress'
   }));
+
   out.vocabulary=(obj.vocabulary||obj.vocab||[]).map(v=>{
     const term=v.term||v.better||v.item||'';
     let context=v.context||v.example||'';
     if(v.item&&v.better&&v.item!==v.better)context=(context?context+' · ':'')+v.item+' → '+v.better;
     return {...v,term,meaning_fr:v.meaning_fr||v.meaning||'',context,status:v.status||'progress'};
   });
-  out.games=(obj.games||[]).map(g=>({...g,options:Array.isArray(g.options)?g.options:[]}));
+
+  const rawGames=Array.isArray(obj.games)?obj.games:(Array.isArray(obj.exercises)?obj.exercises:[]);
+  out.games=rawGames.map(g=>({
+    ...g,
+    type:g.type||'correct',
+    prompt:g.prompt||g.instruction||g.question||'',
+    answer:g.answer||g.expected||g.corrected||'',
+    explanation:g.explanation||g.rule||'',
+    options:Array.isArray(g.options)?g.options:[]
+  })).filter(g=>g.prompt&&g.answer);
+
   out.errors=(obj.errors||obj.mistakes||[]).map(e=>({
     ...e,
     original:e.original||e.wrong||e.example_user||'',
@@ -533,6 +600,7 @@ function normalizeImported(obj){
     title:e.title||e.point||e.category||'Expression à corriger',
     explanation:e.explanation||e.rule||''
   })).filter(e=>e.original&&e.corrected);
+
   return out;
 }
 
@@ -603,7 +671,7 @@ document.getElementById('saveResumeBtn').onclick=()=>{
   }catch(e){
     if(saved){
       saved.className='resumeSaved show';
-      saved.innerHTML='❌ <b>Résumé non enregistré.</b><br>'+escapeHtml(e.message||'Import impossible');
+      saved.innerHTML='❌ <b>Résumé non enregistré.</b><br>'+escapeHtml(e.message||'Import impossible')+'<br><span class="tiny">Le Résumé reste dans la zone : tu peux corriger ou réessayer sans rien perdre.</span>';
     }
   }
 };
