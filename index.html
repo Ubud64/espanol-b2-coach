@@ -180,7 +180,7 @@ function renderQuestions(){qseg.innerHTML='';[3,4,5].forEach(n=>{const b=documen
 
 const topicGuidance={
   'Corée':'Explore librement la Corée selon la séance : séries et cinéma coréens, culture, société, voyage, cuisine et recettes coréennes, habitudes de vie ou actualité culturelle.',
-  'Île Maurice':'Aborde l’île Maurice du point de vue de futurs expatriés qui envisagent de partager leur année entre environ 6 mois à Dénia, sur la Costa Blanca en Espagne, et le reste à l’île Maurice. Les séances peuvent traiter de la vie quotidienne, de l’installation, des régions où vivre, du climat, de la culture, de la gastronomie, des loisirs, de la mer, des démarches pratiques et de l’intégration, sans transformer la séance en conseil juridique ou fiscal.'
+  'Île Maurice':'Aborde l’île Maurice comme thème de découverte : vie quotidienne, régions, climat, culture, gastronomie, loisirs, mer et aspects pratiques d’un séjour ou d’une installation.'
 };
 function buildPrompt(){
   const guidance=topicGuidance[state.topic]?`\nOrientation du thème : ${topicGuidance[state.topic]}`:'';
